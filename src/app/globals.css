@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-ink: #16231f;
+  --color-wash: #f1f4f1;
+  --color-surface: #ffffff;
+  --color-line: #cbd5cf;
+  --color-muted: #4d5c56;
+
+  /* Bin colours - verified >= 4.5:1 contrast against white */
+  --bin-recycle: #1a5fb4;
+  --bin-landfill: #4a5560;
+  --bin-special: #9a5a00;
+  --bin-yard: #1e7b4a;
+  --bin-manual: #475569;
+}
+
+body {
+  color: var(--color-ink);
+  background-color: var(--color-wash);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
+    Cantarell, sans-serif;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
