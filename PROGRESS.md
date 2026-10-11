@@ -12,7 +12,7 @@
 
 - [x] Phase 0: Repo, tooling, verification harness
 - [x] Phase 1: Ruleset and deterministic rules engine
-- [ ] Phase 2: API layer with mock provider
+- [x] Phase 2: API layer with mock provider
 - [ ] Phase 3: The interface (all states, design notes, contrast, screenshots)
 - [ ] Phase 4: Gemini integration, cache and failure handling
 - [ ] Phase 5: Voice (ElevenLabs with fallbacks)
@@ -46,7 +46,7 @@
 
 ## Phase 1: Ruleset and deterministic rules engine (2026-10-11 10:16 IST)
 
-- **Commit**: (pending commit)
+- **Commit**: `aa091a8`
 - **Commands run and result**:
   - `npm run typecheck`: OK (0 errors)
   - `npm run lint`: OK (0 errors, 0 warnings)
@@ -60,3 +60,22 @@
   - Strict decoupling: AI schema has zero destination/advice fields. Pure rules engine alone determines bins.
   - 1000 repeated calls identical (deterministic). Rule order permutations preserve identical decision.
 - **Not verified and why**: None. All Phase 1 gate criteria verified and passing.
+
+## Phase 2: API layer with mock provider (2026-10-11 10:23 IST)
+
+- **Commit**: (pending commit)
+- **Commands run and result**:
+  - `npm run typecheck`: OK (0 errors)
+  - `npm run lint`: OK (0 errors, 0 warnings)
+  - `npm run test`: OK (82 unit tests passed, adding 16 tests for magic bytes, rate limiter, errors, memory safety)
+  - `npm run check:rules`: OK (Houston ruleset valid)
+  - `npm run check:secrets`: OK (clean)
+  - `npm run build`: OK (production build with standalone traces compiled in 6.4s)
+  - `npm run test:e2e`: OK (2 Playwright tests passed)
+  - `npm run check:api`: OK (12 contract assertions passed: `/api/health`, `/api/rules`, `/api/fixtures`, `/api/classify` fixture & upload, `/api/decide`, 415 unsupported content-type, 400 malformed JSON, 400 missing fixture, 400 unknown fixture, magic-byte spoofing rejection, 413 oversized upload, 429 rate limiter trip with Retry-After header, security headers)
+- **Security & Privacy Invariants**:
+  - Magic-byte validation strictly accepts only genuine JPEG, PNG, and WebP buffers.
+  - In-memory processing confirmed: images never written to disk or logged.
+  - Uniform error format `{ error: { code, message, hint, requestId } }` with zero stack traces or filesystem leaks.
+  - In-memory sliding window rate limiter protects endpoints per IP.
+- **Not verified and why**: None. All Phase 2 gate criteria verified and passing.
