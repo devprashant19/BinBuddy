@@ -82,6 +82,30 @@ try {
   // No commits yet or git log failed - fine for initial pre-commit check
 }
 
+// 3. Verify .next/static client bundle if built
+if (fs.existsSync('.next/static')) {
+  function scanDir(dir) {
+    const entries = fs.readdirSync(dir);
+    for (const entry of entries) {
+      const full = `${dir}/${entry}`;
+      if (fs.statSync(full).isDirectory()) {
+        scanDir(full);
+      } else {
+        const text = fs.readFileSync(full, 'utf-8');
+        for (const pattern of SECRET_PATTERNS) {
+          if (pattern.test(text)) {
+            console.error(
+              `[check-secrets] ERROR: Secret pattern ${pattern} matched in client bundle: ${full}`
+            );
+            failed = true;
+          }
+        }
+      }
+    }
+  }
+  scanDir('.next/static');
+}
+
 if (failed) {
   console.error('[check-secrets] FAILED: Potential secrets detected!');
   process.exit(1);

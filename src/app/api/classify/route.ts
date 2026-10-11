@@ -9,6 +9,7 @@ import { checkRateLimit } from '@/lib/http/rate-limit';
 import { generateRequestId } from '@/lib/http/request-id';
 import { createErrorResponse } from '@/lib/http/errors';
 import { classificationSchema, Classification } from '@/lib/schemas/classification';
+import { ClassificationLRUCache, globalClassificationCache } from '@/lib/cache/lru';
 
 export const dynamic = 'force-dynamic';
 
@@ -115,14 +116,23 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Call classifier provider
+    // Call classifier provider with LRU cache
     try {
       const provider = getClassifierProvider();
-      classification = await provider.classify({
-        bytes: buffer,
-        mime: validation.mime!,
-      });
-      source = provider.name === 'gemini' ? 'live' : 'demo-sample';
+      const cacheKey = ClassificationLRUCache.computeKey(buffer, provider.classifierVersion);
+      const cached = globalClassificationCache.get(cacheKey);
+
+      if (cached) {
+        classification = cached;
+        source = 'cache';
+      } else {
+        classification = await provider.classify({
+          bytes: buffer,
+          mime: validation.mime!,
+        });
+        globalClassificationCache.set(cacheKey, classification);
+        source = provider.name === 'gemini' ? 'live' : 'demo-sample';
+      }
     } catch (err: any) {
       if (err.message?.includes('CLASSIFIER_UNAVAILABLE')) {
         return createErrorResponse(

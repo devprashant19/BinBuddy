@@ -1,6 +1,9 @@
 import { ClassifierProvider } from './types';
 import { mockProvider } from './mock';
+import { GeminiClassifierProvider } from './gemini';
 import { getEnv } from '../config/env';
+
+let cachedGeminiProvider: GeminiClassifierProvider | null = null;
 
 export function getClassifierProvider(): ClassifierProvider {
   const env = getEnv();
@@ -10,6 +13,12 @@ export function getClassifierProvider(): ClassifierProvider {
     throw new Error('CLASSIFIER_UNAVAILABLE: Injected simulated provider failure.');
   }
 
-  // Phase 2 uses mock provider. Phase 4 wires live Gemini when key present.
+  if (env.PROVIDER_MODE !== 'mock' && env.GEMINI_API_KEY) {
+    if (!cachedGeminiProvider) {
+      cachedGeminiProvider = new GeminiClassifierProvider(env.GEMINI_API_KEY, env.GEMINI_MODEL);
+    }
+    return cachedGeminiProvider;
+  }
+
   return mockProvider;
 }

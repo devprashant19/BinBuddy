@@ -27,7 +27,11 @@ export default defineConfig({
     : {
         command: 'npm run start',
         url: BASE_URL,
-        reuseExistingServer: !process.env.CI,
+        reuseExistingServer: false,
         timeout: 60000,
+        env: {
+          ...process.env,
+          PROVIDER_MODE: 'mock',
+        },
       },
 });

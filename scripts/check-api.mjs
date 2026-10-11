@@ -39,7 +39,7 @@ try {
     serverProcess = spawn('npx', ['next', 'start', '-p', String(testPort)], {
       shell: true,
       stdio: 'pipe',
-      env: { ...process.env, PORT: String(testPort), NODE_ENV: 'production' },
+      env: { ...process.env, PORT: String(testPort), NODE_ENV: 'production', PROVIDER_MODE: 'mock' },
     });
 
     const ready = await waitForServer(BASE_URL);

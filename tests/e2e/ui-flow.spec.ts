@@ -144,4 +144,61 @@ test.describe('Phase 3 Complete UI Suite', () => {
     await expect(page.locator('#destination-heading')).toBeVisible();
     await expect(page.locator('#destination-heading')).toBeFocused();
   });
+
+  test('Error state: classifier failure displays error panel with 3 working recovery actions', async ({
+    page,
+  }) => {
+    await page.goto('/');
+
+    // Intercept /api/classify to simulate provider failure
+    await page.route('**/api/classify', (route) =>
+      route.fulfill({
+        status: 503,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          error: {
+            code: 'CLASSIFIER_UNAVAILABLE',
+            message: 'Vision classifier is currently unavailable.',
+            hint: 'Try again, use a sample, or pick the item manually.',
+          },
+        }),
+      })
+    );
+
+    // Upload an image to trigger the failed classification
+    const pngBuffer = Buffer.from([
+      0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d, 0x49, 0x48, 0x44,
+      0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x08, 0x06, 0x00, 0x00, 0x00, 0x1f,
+      0x15, 0xc4, 0x89, 0x00, 0x00, 0x00, 0x0a, 0x49, 0x44, 0x41, 0x54, 0x78, 0x9c, 0x63, 0x00,
+      0x01, 0x00, 0x00, 0x05, 0x00, 0x01, 0x0d, 0x0a, 0x2d, 0xb4, 0x00, 0x00, 0x00, 0x00, 0x49,
+      0x45, 0x4e, 0x44, 0xae, 0x42, 0x60, 0x82,
+    ]);
+
+    const uploadInput = page.locator('input[data-testid="upload-input"]');
+    await uploadInput.setInputFiles({
+      name: 'test.png',
+      mimeType: 'image/png',
+      buffer: pngBuffer,
+    });
+
+    // Verify ErrorPanel is displayed
+    await expect(page.locator('text=Analysis uncompleted')).toBeVisible();
+    await expect(page.locator('text=Vision classifier is currently unavailable.')).toBeVisible();
+
+    // Verify recovery 1: "Use a sample" navigates back to empty state
+    await page.click('button:has-text("Use a sample")');
+    await expect(page.locator('text=Find the right bin')).toBeVisible();
+
+    // Re-trigger error
+    await uploadInput.setInputFiles({
+      name: 'test2.png',
+      mimeType: 'image/png',
+      buffer: pngBuffer,
+    });
+    await expect(page.locator('text=Analysis uncompleted')).toBeVisible();
+
+    // Verify recovery 2: "Pick it yourself" navigates to manual picker
+    await page.click('button:has-text("Pick it yourself")');
+    await expect(page.locator('text=Pick the item yourself')).toBeVisible();
+  });
 });

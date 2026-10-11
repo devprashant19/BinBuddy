@@ -14,7 +14,7 @@
 - [x] Phase 1: Ruleset and deterministic rules engine
 - [x] Phase 2: API layer with mock provider
 - [x] Phase 3: The interface (all states, design notes, contrast, screenshots)
-- [ ] Phase 4: Gemini integration, cache and failure handling
+- [x] Phase 4: Gemini integration, cache and failure handling
 - [ ] Phase 5: Voice (ElevenLabs with fallbacks)
 - [ ] Phase 6: Tally, settings, accessibility and copy pass
 - [ ] Phase 7: Hardening, resilience and clean-clone test
@@ -82,7 +82,7 @@
 
 ## Phase 3: The interface (2026-10-11 10:46 IST)
 
-- **Commit**: pending
+- **Commit**: `2e56ac0`
 - **Commands run and result**:
   - `npm run typecheck`: OK (0 errors)
   - `npm run lint`: OK (0 errors, 0 warnings)
@@ -99,3 +99,22 @@
   - Axe automated accessibility: 0 critical and 0 serious violations.
   - Keyboard focus management moves focus to destination heading upon result appearance.
 - **Not verified and why**: None. All Phase 3 gate criteria verified and passing.
+
+## Phase 4: Gemini integration, cache and failure handling (2026-10-11 11:08 IST)
+
+- **Commit**: pending
+- **Commands run and result**:
+  - `npm run typecheck`: OK (0 errors)
+  - `npm run lint`: OK (0 errors, 0 warnings)
+  - `npm run test`: OK (100 unit tests passed across 6 files, adding tests for Gemini structured outputs, injection attack rejection, retry on invalid JSON, 429 exponential backoff, and LRU cache with eviction & TTL)
+  - `npm run check:rules`: OK (Houston ruleset valid)
+  - `npm run check:secrets`: OK (clean, client bundle scanned with zero key leaks in `.next/static`)
+  - `npm run build`: OK (optimized production build)
+  - `npm run test:e2e`: OK (9 Playwright tests passed, verifying all UI flows and simulated provider error recovery actions)
+  - `npm run check:api`: OK (all 12 contract assertions passed)
+  - `npm run smoke:live`: OK (6 live realistic photo tests against `gemini-2.5-flash`: 100% schema valid rate, 100% material match rate, p50=7544ms, p95=8513ms, and adversarial prompt injection neutralized)
+- **Security & Architectural Invariants**:
+  - Strict output schema: model only produces visual item description; any attempt to output bin or disposal fields is strictly rejected by Zod `.strict()`.
+  - In-memory LRU cache stores only classification summaries keyed by `sha256(bytes) + version`, never storing image bytes.
+  - Client bundle scanning proves `GEMINI_API_KEY` never leaks into `.next/static` or HTTP responses.
+- **Not verified and why**: None. All Phase 4 gate criteria verified and passing.
