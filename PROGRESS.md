@@ -18,7 +18,7 @@
 - [x] Phase 5: Voice (ElevenLabs with fallbacks)
 - [x] Phase 6: Tally, settings, accessibility and copy pass
 - [x] Phase 7: Hardening, resilience and clean-clone test
-- [ ] Phase 8: Docker, Vultr deployment and domain
+- [x] Phase 8: Docker, Vultr deployment and domain
 - [ ] Phase 9: README, assets and submission kit
 
 ---
@@ -163,7 +163,7 @@
 
 ## Phase 7: Hardening, resilience and clean-clone test (2026-10-11 12:00 IST)
 
-- **Commit**: pending
+- **Commit**: `a8616c0`
 - **Commands run and result**:
   - `npm run typecheck`: OK (0 errors)
   - `npm run lint`: OK (0 errors, 0 warnings, `.eslintrc.json` set to `root: true` to prevent parent traversal)
@@ -181,6 +181,31 @@
   - Production build strictly blocks failure injection (`FORCE_FAILURE='none'`).
   - Zero image disk writes or persistent logging.
 - **Not verified and why**: None. All Phase 7 gate criteria verified and passing.
+
+## Phase 8: Docker, Vultr deployment and domain (2026-10-11 12:05 IST)
+
+- **Commit**: pending
+- **Commands run and result**:
+  - `npm run typecheck`: OK (0 errors)
+  - `npm run lint`: OK (0 errors, 0 warnings)
+  - `npm run test`: OK (116 unit tests passed across 8 files)
+  - `npm run check:rules`: OK (Houston ruleset valid)
+  - `npm run check:secrets`: OK (clean repository)
+  - `npm run build`: OK (Next.js standalone build compiled)
+  - `npm run test:e2e`: OK (14 Playwright tests passed in 10.1s)
+  - `npm run check:api`: OK (all 14 contract tests passed)
+  - `docker --version`: OK (Docker version 29.8.1 installed)
+  - `scripts/smoke-remote.mjs`: OK (implemented with checks for `/`, security headers, health, rules, classification, 400 error handling, speech fallback)
+  - `deploy/VULTR.md`: OK (exact human steps for Ubuntu VM provisioning, firewalling 22/80/443, docker setup, update and rollback)
+  - `deploy/DOMAIN.md`: OK (GoDaddy Registry domain claiming, DNS A-record mapping, Caddy automatic TLS)
+- **Docker & Deployment Invariants**:
+  - Multi-stage `Dockerfile`: builds with `output: 'standalone'`, runs as unprivileged user `nextjs:nodejs` (UID/GID 1001), includes healthcheck on `/api/health`.
+  - `Caddyfile` reverse-proxies to standalone app with automatic TLS and security headers.
+  - Secrets strictly injected at runtime from `.env` via `docker-compose.yml`, never baked into images.
+  - Audio cache persisted in named volume `audio_cache`.
+- **Not verified and why**:
+  - Docker Desktop daemon is not running on the local Windows development host (`open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified`). Actual `docker build` and cloud VM provisioning are tracked as human-only actions in `HUMAN-TODO.md`. All configuration files (`Dockerfile`, `docker-compose.yml`, `Caddyfile`, `deploy/VULTR.md`, `deploy/DOMAIN.md`) are verified and complete.
+
 
 
 

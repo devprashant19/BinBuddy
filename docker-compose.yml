@@ -1,0 +1,45 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - PROVIDER_MODE=${PROVIDER_MODE:-auto}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-3.8-flash}
+      - ELEVENLABS_API_KEY=${ELEVENLABS_API_KEY:-}
+      - ELEVENLABS_VOICE_ID=${ELEVENLABS_VOICE_ID:-cicZiwk5NrFYKb3gi8in}
+      - ELEVENLABS_MODEL_ID=${ELEVENLABS_MODEL_ID:-eleven_flash_v2_5}
+      - CONFIDENCE_THRESHOLD=${CONFIDENCE_THRESHOLD:-0.65}
+      - MAX_UPLOAD_MB=${MAX_UPLOAD_MB:-8}
+      - RATE_LIMIT_PER_MIN=${RATE_LIMIT_PER_MIN:-20}
+      - RULESET_ID=${RULESET_ID:-houston-tx-curbside}
+      - AUDIO_CACHE_DIR=/app/.cache/audio
+      - APP_URL=${APP_URL:-http://localhost:3000}
+    volumes:
+      - audio_cache:/app/.cache/audio
+    expose:
+      - "3000"
+
+  caddy:
+    image: caddy:alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - DOMAIN=${DOMAIN:-localhost}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+
+volumes:
+  audio_cache:
+  caddy_data:
+  caddy_config:
