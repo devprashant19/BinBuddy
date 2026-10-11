@@ -23,13 +23,11 @@ This file tracks tasks that require human authorization, credentials, physical d
 
 ## 3. Audio Pre-warming
 
-Once `ELEVENLABS_API_KEY` is present in `.env`:
+Note: `scripts/warm-audio.mjs` is intentionally excluded from the production Docker container to keep the image minimal.
 
-```bash
-npm run warm:audio
-```
-
-This generates and caches high-fidelity MP3 narrations for all Houston ruleset items into `.cache/audio/`.
+To warm the audio cache on the server:
+- **Option A (Before container build / on host)**: Run `npm run warm:audio` in the cloned repo on the host VM so that `.cache/audio/` is populated before `docker compose up`, or bind-mount `.cache/audio` into `/app/.cache/audio`.
+- **Option B (After deploy)**: Visit the live web app and tap each of the 8 sample buttons once. Tapping generates and caches the audio dynamically to disk for all subsequent requests. If ElevenLabs is unconfigured or unavailable, browser speech synthesis immediately plays aloud without server audio files.
 
 ## 4. Vultr Server Deployment
 

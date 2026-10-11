@@ -8,24 +8,24 @@
 ### [0:00 - 0:15] The Hook & Problem Statement
 
 - **Action**: Hold up a soiled pizza box standing over a recycling cart. Show BinBuddy interface on screen.
-- **Voiceover**: _"Every day, millions of people stand over their recycling carts with an item in hand, guessing where it goes. In Houston, guessing wrong contaminates truckloads of recyclables. Standard AI chatbots make this worse by hallucinating city laws. Meet BinBuddy: Point. Sort. Hear it."_
+- **Voiceover**: _"Every day, residents stand over their recycling carts with an item in hand, guessing where it goes. In Houston, guessing wrong contaminates collection streams. Generic chatbots make this worse by hallucinating city laws. Meet BinBuddy: Point. Sort. Hear it."_
 
 ---
 
 ### [0:15 - 0:50] The Core Flow: Point, Sort, Hear It
 
 - **Action**: Tap the **Soda Can** sample chip (or point camera at an aluminum can).
-- **Visual**: The UI transitions; the vibrant blue **GREEN RECYCLING CART** lid banner opens with bold typography.
+- **Visual**: The UI transitions; the bold **GREEN RECYCLING CART** lid banner opens with high-contrast typography.
 - **Action**: Tap the **Hear it** button.
-- **Audio**: ElevenLabs speaks: _"Rinsed and drained aluminum and bimetal soup or beverage cans go in the green recycling cart."_
+- **Audio**: ElevenLabs speaks: _"Clean metal cans go in the green recycling cart."_
 - **Action**: Tap **Why this answer** to expand the disclosure sheet.
-- **Voiceover**: _"Notice two critical details: first, color belongs to the bins—the vibrant blue lid signals the destination unmistakably from arm's length. Second, under 'Why this answer', BinBuddy discloses exactly what it saw, the specific rule matched, and cites the official City of Houston Solid Waste Management directory."_
+- **Voiceover**: _"Notice two critical details: first, color belongs to the bins—the prominent green lid signals the destination unmistakably from arm's length. Second, under 'Why this answer', BinBuddy discloses exactly what it saw, the specific rule matched, and cites the official City of Houston Solid Waste Management directory."_
 
 ---
 
 ### [0:50 - 1:20] Ambiguity & Clarification Flow
 
-- **Action**: Tap **Try another**. Select an item needing clarification (e.g., takeout box or translucent plastic).
+- **Action**: Tap **Try another**. Select an item needing clarification (or a soiled item).
 - **Visual**: The Clarification screen appears with: _"Is it clean and free of food grease?"_ and two large buttons: _Yes, clean_ and _Food-soiled or greasy_.
 - **Action**: Tap _Food-soiled or greasy_.
 - **Visual**: The dark charcoal **BLACK TRASH CART** lid opens immediately.
@@ -39,7 +39,7 @@
 - **Visual**: Error panel appears with non-accusatory copy: _"BinBuddy could not analyze that photo. Try again, use a sample, or pick the item yourself."_
 - **Action**: Tap **Pick it yourself**. Select _Plastic_ -> _Food Container_ -> _Clean_ -> Submit.
 - **Visual**: Result sheet displays with source label marked `manual`.
-- **Voiceover**: _"Even during total network outages, users are never trapped. The interactive manual picker lets residents make authoritative sorting decisions offline."_
+- **Voiceover**: _"Even during total network outages or API quota limits, users are never trapped. The interactive manual picker lets residents make authoritative sorting decisions offline."_
 
 ---
 
@@ -47,7 +47,7 @@
 
 - **Action**: Tap **Hear it** during mock/offline mode.
 - **Visual**: The button displays `Playing (browser voice)` with the subtle badge `browser voice`.
-- **Voiceover**: _"If ElevenLabs voice credits or network latency are impacted, BinBuddy immediately degrades to the browser's native speech synthesis without dropping a beat."_
+- **Voiceover**: _"If ElevenLabs voice credits or network latency are impacted, BinBuddy immediately degrades to the browser's native speech synthesis (~118ms dispatch) without dropping a beat."_
 - **Action**: Tap **I sorted it**.
 - **Visual**: Button shifts to _Sorted!_ with green checkmark. Tally counter below updates: _"Items you marked as sorted: 1 (your own count)"_.
 - **Voiceover**: _"Notice the tally wording: no fake CO2 or diverted kilograms. Just an honest, verifiable record of items you marked as sorted."_
@@ -57,10 +57,10 @@
 ### [2:20 - 2:50] Architecture & Engineering Invariants
 
 - **Visual**: Show architecture slide (or Mermaid diagram).
-- **Voiceover**: _"Under the hood, BinBuddy enforces our core invariant: Gemini describes what is physically visible; our deterministic TypeScript rules engine alone decides the bin. 116 unit tests, 14 E2E Playwright tests, zero WCAG accessibility violations, zero image disk storage, containerized with Caddy on Vultr Cloud Compute."_
+- **Voiceover**: _"Under the hood, BinBuddy enforces our core invariant: Gemini describes what is physically visible; our deterministic TypeScript rules engine alone decides the bin. 116 unit tests with 100% rules engine coverage, 14 E2E Playwright tests with zero serious or critical issues in automated axe checks, zero image disk storage, containerized with Caddy [ADD AFTER DEPLOY: Vultr production link]."_
 
 ---
 
 ### [2:50 - 3:00] Closing
 
-- **Voiceover**: _"BinBuddy gives residents clear, auditable waste sorting answers in 3 seconds. Built for CodeRED: Orion. Try it today at binbuddy.live!"_
+- **Voiceover**: _"BinBuddy gives residents clear, auditable waste sorting answers backed by official city rules. Built for CodeRED: Orion. Try it today [ADD AFTER DEPLOY: live deployment domain]!"_
