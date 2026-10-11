@@ -54,7 +54,7 @@ Every rule in `data/rules/houston-tx-curbside.json` was cross-referenced against
 | `plastic-container-clean` | 75 | Clean plastic containers marked #1–5 and #7 go in the green cart. | Plastic containers #1–5 and #7 (rinsed and drained) are accepted in green carts. | **SUPPORTED** |
 | `textile-trash` | 70 | Textiles belong in the black trash cart or donation bin. | Textiles (clothing, shoes, towels, sheets, pillows) are explicitly listed as non-accepted curbside materials. | **SUPPORTED** |
 | `organic-trash` | 65 | Food scraps and organic waste go in the black trash cart. | Food scraps and food contamination are prohibited from green carts; handled via regular garbage collection. | **SUPPORTED** |
-| `composite-trash` | 60 | Mixed composite materials go in the black trash cart. | Non-accepted mixed-material items not matching approved single-stream categories default to regular trash. | **PARTLY SUPPORTED** (Houston specifies accepted commodities; unlisted mixed composites fall to trash) |
+| `composite-trash` | 60 | Mixed composite materials require manual check of city guidance. | Official Houston guidelines do not explicitly list composite materials; routed to manual check for city guidance or 311. | **SUPPORTED** (Explicitly routed to `manual_check` because unlisted in curbside rules) |
 
 ---
 

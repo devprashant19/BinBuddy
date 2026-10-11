@@ -258,10 +258,10 @@
         "materials": ["composite"]
       },
       "decision": {
-        "type": "trash",
-        "destinationId": "trash_cart",
-        "reason": "Composite materials made of mixed bonded layers cannot be recycled curbside.",
-        "narration": "Composite materials go in the black trash cart."
+        "type": "manual_check",
+        "destinationId": "manual_check",
+        "reason": "Composite materials made of mixed bonded layers are not explicitly listed in Houston curbside guidelines. Check official city guidance or call 311.",
+        "narration": "Composite materials require checking official City of Houston guidance."
       },
       "sourceUrl": "https://www.houstontx.gov/solidwaste/recycling.html"
     }

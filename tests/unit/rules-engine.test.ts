@@ -423,7 +423,7 @@ describe('Rules Engine & Houston Municipal Ruleset', () => {
         expectedType: 'trash',
       },
       {
-        desc: 'Composite packaging pouch -> trash',
+        desc: 'Composite packaging pouch -> manual check',
         item: {
           itemType: 'food_container',
           material: 'composite',
@@ -432,8 +432,8 @@ describe('Rules Engine & Houston Municipal Ruleset', () => {
           confidence: 0.89,
           shortDescription: 'Multi-layer foil-plastic pouch',
         },
-        expectedDestination: 'trash_cart',
-        expectedType: 'trash',
+        expectedDestination: 'manual_check',
+        expectedType: 'manual_check',
       },
 
       // 9. Combinations of material x condition
@@ -516,7 +516,7 @@ describe('Rules Engine & Houston Municipal Ruleset', () => {
         expectedType: 'trash',
       },
       {
-        desc: 'Composite soiled -> trash',
+        desc: 'Composite soiled -> manual check',
         item: {
           itemType: 'food_container',
           material: 'composite',
@@ -525,8 +525,8 @@ describe('Rules Engine & Houston Municipal Ruleset', () => {
           confidence: 0.9,
           shortDescription: 'Soiled composite bag',
         },
-        expectedDestination: 'trash_cart',
-        expectedType: 'trash',
+        expectedDestination: 'manual_check',
+        expectedType: 'manual_check',
       },
       {
         desc: 'Unknown material and type -> manual check fallback',
