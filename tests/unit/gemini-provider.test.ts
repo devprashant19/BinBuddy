@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { GeminiClassifierProvider } from '@/lib/providers/gemini';
+import { GeminiClassifierProvider, isDailyQuotaError } from '@/lib/providers/gemini';
 
 const mockGenerateContent = vi.fn();
 
@@ -121,5 +121,55 @@ describe('GeminiClassifierProvider', () => {
 
     await expect(provider.classify(dummyInput)).rejects.toThrow(/CLASSIFIER_UNAVAILABLE/);
     expect(mockGenerateContent).toHaveBeenCalledTimes(2);
+  });
+
+  it('correctly identifies daily quota errors via isDailyQuotaError', () => {
+    expect(
+      isDailyQuotaError(
+        "got status: 429 Too Many Requests. Quota exceeded for quota metric 'GenerateRequestsPerDayPerProjectPerModel-FreeTier'"
+      )
+    ).toBe(true);
+    expect(
+      isDailyQuotaError("429 RESOURCE_EXHAUSTED Quota exceeded for metric free_tier_requests")
+    ).toBe(true);
+    expect(isDailyQuotaError("429 per-day request limit reached")).toBe(true);
+    expect(
+      isDailyQuotaError("429 Too Many Requests: Rate limit exceeded (5 requests per minute)")
+    ).toBe(false);
+  });
+
+  it('detects daily-quota 429 error, does NOT retry, and immediately throws with daily limit hint', async () => {
+    const dailyQuotaError = new Error(
+      "got status: 429 Too Many Requests. Quota exceeded for quota metric 'GenerateRequestsPerDayPerProjectPerModel-FreeTier'"
+    );
+    mockGenerateContent.mockRejectedValueOnce(dailyQuotaError);
+
+    await expect(provider.classify(dummyInput)).rejects.toThrow(/hit its daily limit/i);
+    // Crucial requirement: Must NOT retry on daily quota
+    expect(mockGenerateContent).toHaveBeenCalledTimes(1);
+  });
+
+  it('enforces 15-second total classification time budget including retries', async () => {
+    mockGenerateContent.mockImplementationOnce(async () => {
+      throw new Error('503 UNAVAILABLE');
+    });
+
+    // Simulate elapsed time exceeding 15 seconds
+    const originalDateNow = Date.now;
+    let callCount = 0;
+    vi.spyOn(Date, 'now').mockImplementation(() => {
+      callCount++;
+      return originalDateNow() + callCount * 8000;
+    });
+
+    try {
+      await expect(provider.classify(dummyInput)).rejects.toThrow(
+        /Total classification time budget of 15 seconds exceeded|CLASSIFIER_UNAVAILABLE/i
+      );
+      // Because budget expired, retry was aborted
+      expect(mockGenerateContent).toHaveBeenCalledTimes(1);
+    } finally {
+      vi.restoreAllMocks();
+    }
   });
 });

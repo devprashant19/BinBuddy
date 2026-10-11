@@ -9,6 +9,8 @@ interface ErrorPanelProps {
 }
 
 export function ErrorPanel({ message, hint, onRetry, onUseSample, onManualPick }: ErrorPanelProps) {
+  const isDailyLimit = message.toLowerCase().includes('daily limit');
+
   return (
     <section
       role="alert"
@@ -24,19 +26,25 @@ export function ErrorPanel({ message, hint, onRetry, onUseSample, onManualPick }
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row">
-        <button
-          type="button"
-          onClick={onRetry}
-          className="min-h-[44px] flex-1 rounded-md bg-ink px-4 py-2 text-sm font-medium text-wash hover:bg-ink/90 focus:outline-none focus:ring-2 focus:ring-ink"
-        >
-          Try again
-        </button>
+        {!isDailyLimit && (
+          <button
+            type="button"
+            onClick={onRetry}
+            className="min-h-[44px] flex-1 rounded-md bg-ink px-4 py-2 text-sm font-medium text-wash hover:bg-ink/90 focus:outline-none focus:ring-2 focus:ring-ink"
+          >
+            Try again
+          </button>
+        )}
         <button
           type="button"
           onClick={onUseSample}
-          className="min-h-[44px] flex-1 rounded-md border border-line bg-surface px-4 py-2 text-sm font-medium text-ink hover:bg-wash focus:outline-none focus:ring-2 focus:ring-ink"
+          className={`min-h-[44px] flex-1 rounded-md px-4 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-ink ${
+            isDailyLimit
+              ? 'bg-ink text-wash hover:bg-ink/90'
+              : 'border border-line bg-surface text-ink hover:bg-wash'
+          }`}
         >
-          Use a sample
+          {isDailyLimit ? 'Try a sample' : 'Use a sample'}
         </button>
         <button
           type="button"

@@ -12,7 +12,7 @@ This document candidly addresses the boundaries, assumptions, and trade-offs mad
 
 ### Q2: How accurate is the item classification?
 
-**Answer**: In our live test suite against realistic photos of consumer waste items (`tests/fixtures/photos/`), Gemini 3.8 Flash achieved a 100% schema-valid rate and material match rate across all non-throttled runs. However, this was evaluated on a small sample of 6 photos and 24 live runs. Real-world accuracy under degraded conditions (poor lighting, obscured resin codes, crushed items) is subject to vision limits. BinBuddy compensates by enforcing a confidence threshold (default 0.65). If confidence is below this threshold, BinBuddy triggers an interactive **Clarification** question or directs the user to **City Guidance / Manual Picker**, rather than guessing.
+**Answer**: In our live test suite against realistic photos of consumer waste items (`tests/fixtures/photos/`), Gemini 3.8 Flash achieved a 100% schema-valid rate and material match rate across all 13 successful runs (successful calls p50: 6,621ms, p95: 12,434ms, capped at 15s total budget). Across 24 total runs, 11 were throttled after reaching Google AI Studio's 20 requests/day free tier cap. Real-world accuracy under degraded conditions (poor lighting, obscured resin codes, crushed items) is subject to vision limits. BinBuddy compensates by enforcing a confidence threshold (default 0.65). If confidence is below this threshold, BinBuddy triggers an interactive **Clarification** question or directs the user to **City Guidance / Manual Picker**, rather than guessing.
 
 ### Q3: What happens when the city updates its recycling rules?
 
@@ -50,7 +50,7 @@ This document candidly addresses the boundaries, assumptions, and trade-offs mad
 ## 2. Known Constraints & Non-Goals
 
 1. **Subset of Houston Rules**: The current Houston ruleset encodes an initial subset of 15 municipal rules for residential curbside single-stream collection and Neighborhood Depository programs. Unhandled items (yard waste, large bulky plastic furniture, hazardous paint/chemicals) route to manual city guidance or 311.
-2. **Small Test Sample Size**: Live API benchmarking was conducted on a small sample of 6 photo fixtures (24 API calls) and 8 built-in sample fixtures.
+2. **Small Test Sample Size**: Live API benchmarking was conducted on a small sample of 6 photo fixtures (24 API calls: 13 successful with p50 ~6.6s, 11 rate-limited by free-tier daily cap, capped at 15s) and 8 built-in sample fixtures.
 3. **One City**: Currently implemented for Houston, TX only. Multi-municipality support is architected via the schema but requires encoding additional municipal rulesets.
 4. **No Environmental Quantity Claims**: BinBuddy strictly avoids unverified assertions like _"You saved 2.3 kg of CO2"_ or _"5 kg diverted from landfill"_. Life-cycle analysis depends on municipal MRF processing efficiency and market off-take. BinBuddy tracks only verifiable human actions: _"Items you marked as sorted: N (your own count)"_.
 5. **Draft Rulesets**: Community-contributed rulesets are explicitly labeled with a `"Draft rules"` chip until verified against official municipal sources.

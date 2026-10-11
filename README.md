@@ -6,7 +6,7 @@
 [![Ruleset](https://img.shields.io/badge/ruleset-Houston%2C%20TX%20SWMD%20v1.0.0-emerald)](data/rules/houston-tx-curbside.json)
 [![Hackathon](https://img.shields.io/badge/hackathon-CodeRED%3A%20Orion%202026-orange)](SUBMISSION/devpost.md)
 
-> Standing over a row of curbside bins with an item in hand can be confusing. Rules vary by municipality, resin codes are tiny, and "wishcycling" contaminates collection streams. BinBuddy tells you—out loud (demo mode cold-start to decision in ~1.88s with an 89.9ms tap-to-decision; live cloud classification observed p50 of ~12.4s)—which bin your item belongs in, and cites the official municipal source.
+> Standing over a row of curbside bins with an item in hand can be confusing. Rules vary by municipality, resin codes are tiny, and "wishcycling" contaminates collection streams. BinBuddy tells you—out loud (demo mode cold-start to decision in ~1.88s with an 89.9ms tap-to-decision; live cloud classification successful calls p50 of ~6.6s, capped at 15s max)—which bin your item belongs in, and cites the official municipal source.
 
 ---
 
@@ -51,7 +51,7 @@ BinBuddy is engineered to provide an immediate answer even during cloud outages 
 
 | Tier | Vision Perception | Speech Narration | Ambiguity Handling |
 | :--- | :--- | :--- | :--- |
-| **Tier 1 (Live)** | Google Gemini 3.8 Flash Multimodal API (observed p50 ~12.4s) | ElevenLabs Flash v2.5 TTS (cold ~1.04s) | High confidence (>= 0.65) immediate decision |
+| **Tier 1 (Live)** | Google Gemini 3.8 Flash Multimodal API (successful calls p50 ~6.6s, capped at 15s) | ElevenLabs Flash v2.5 TTS (cold ~1.04s) | High confidence (>= 0.65) immediate decision |
 | **Tier 2 (Cache)** | In-memory LRU cache (`sha256(bytes) + version`) | Persistent disk cache (`.cache/audio/`, ~1.25ms disk read) | Sub-threshold triggers 1 plain Clarification question |
 | **Tier 3 (Local)** | Built-in verified sample fixtures (~89.9ms decision) | Browser Web Speech API (`window.speechSynthesis`, ~118ms dispatch) | Selecting _"Not sure"_ routes to city guidance |
 | **Tier 4 (Offline)** | Interactive zero-network manual material picker | Quiet visual result sheet with high contrast | Striped neutral manual check panel |
@@ -149,7 +149,7 @@ docker compose logs -f
 ## Limitations & Disclosures
 
 - **Municipal Scope**: Enforces an initial subset of 15 curbside residential rules for the City of Houston, Texas. Unhandled materials (yard waste, bulky items, hazardous chemicals) route to manual city guidance or 311.
-- **Sample Size**: Live latency and classification benchmarks were run against a small sample of 6 fixtures (24 live API requests) and 8 built-in sample fixtures.
+- **Sample Size**: Live latency and classification benchmarks were run against a small sample of 6 fixtures (24 live API requests: 13 successful with p50 ~6.6s and 100% schema validity; 11 rate-limited by free-tier daily cap, capped at 15s) and 8 built-in sample fixtures.
 - **API Quotas**: Free-tier Google AI Studio keys enforce a daily limit of 20 requests per day (`GenerateRequestsPerDayPerProjectPerModel-FreeTier`). Live usage beyond this limit triggers graceful 503 fallback to manual selection and sample fixtures.
 - **AI-Assisted Development**: Developed with AI coding assistance (Antigravity). Five public hackathon repositories were inspected for project structure and configuration best practices only; zero application code was copied.
 - Full FAQ & judge disclosures: [`docs/limitations.md`](docs/limitations.md).

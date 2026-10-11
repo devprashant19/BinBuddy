@@ -55,7 +55,7 @@ Generic AI chatbots often compound this issue by hallucinating regional recyclin
 ## Limitations & Disclosures
 
 - **Municipal Scope**: Enforces an initial subset of 15 curbside residential rules for the City of Houston, Texas. Unhandled items route to manual city guidance or 311.
-- **Sample Size**: Live latency benchmarks were conducted on a small sample of 6 photos (24 requests, observed p50 ~12.4s, p95 ~40.7s, max ~41.3s).
+- **Sample Size**: Live latency benchmarks across 6 photos recorded 13 successful requests (p50 ~6.6s, p95 ~12.4s, max ~12.4s, 100% schema-valid) and 11 rate-limited requests (capped at 15s max budget including retries).
 - **AI-Assisted Development**: Developed with AI coding assistance (Antigravity). Five public hackathon repositories were reviewed for structural patterns only; zero application code was copied.
 
 ---

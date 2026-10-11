@@ -4,6 +4,21 @@ import { classificationSchema, Classification } from '../schemas/classification'
 import { getEnv } from '../config/env';
 
 export const CLASSIFIER_VERSION = 'gemini-flash-v1.0.0';
+export const TOTAL_TIME_BUDGET_MS = 15000;
+
+export function isDailyQuotaError(message: string): boolean {
+  const lower = message.toLowerCase();
+  return (
+    (lower.includes('429') || lower.includes('resource_exhausted')) &&
+    (lower.includes('perday') ||
+      lower.includes('per-day') ||
+      lower.includes('per day') ||
+      lower.includes('daily') ||
+      lower.includes('free_tier_requests') ||
+      lower.includes('generaterequestsperday') ||
+      lower.includes('requests_per_day'))
+  );
+}
 
 export const GEMINI_CLASSIFICATION_SCHEMA: Schema = {
   type: Type.OBJECT,
@@ -110,14 +125,22 @@ export class GeminiClassifierProvider implements ClassifierProvider {
       throw new Error('CLASSIFIER_UNAVAILABLE: Injected simulated provider failure.');
     }
 
-    return this.callWithRetry(input, false);
+    const startTime = Date.now();
+    return this.callWithRetry(input, false, 0, startTime);
   }
 
   private async callWithRetry(
     input: ClassifierInput,
     isRetry = false,
-    retryCount = 0
+    retryCount = 0,
+    startTime = Date.now()
   ): Promise<Classification> {
+    const elapsed = Date.now() - startTime;
+    const remainingMs = TOTAL_TIME_BUDGET_MS - elapsed;
+    if (remainingMs <= 0) {
+      throw new Error('CLASSIFIER_UNAVAILABLE: Total classification time budget of 15 seconds exceeded.');
+    }
+
     const base64Image = input.bytes.toString('base64');
     const promptText = isRetry
       ? `${SYSTEM_INSTRUCTION}\nRETRY NOTICE: Previous response failed schema validation. Output strictly valid JSON matching schema only. Zero additional fields.`
@@ -147,9 +170,13 @@ export class GeminiClassifierProvider implements ClassifierProvider {
         },
       });
 
-      // Strict 12-second timeout
+      // Strict call timeout bounded by remaining budget, max 12 seconds per call
+      const callTimeoutMs = Math.min(12000, remainingMs);
       const timeoutPromise = new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error('TIMEOUT: Gemini call exceeded 12 seconds')), 12000)
+        setTimeout(
+          () => reject(new Error(`TIMEOUT: Gemini call exceeded ${callTimeoutMs}ms limit`)),
+          callTimeoutMs
+        )
       );
 
       const response = await Promise.race([callPromise, timeoutPromise]);
@@ -164,7 +191,7 @@ export class GeminiClassifierProvider implements ClassifierProvider {
         parsedJson = JSON.parse(rawText.trim());
       } catch (err: any) {
         if (!isRetry) {
-          return this.callWithRetry(input, true, retryCount);
+          return this.callWithRetry(input, true, retryCount, startTime);
         }
         throw new Error(`CLASSIFIER_BAD_OUTPUT: Failed to parse JSON: ${err.message}`);
       }
@@ -172,7 +199,7 @@ export class GeminiClassifierProvider implements ClassifierProvider {
       const validated = classificationSchema.safeParse(parsedJson);
       if (!validated.success) {
         if (!isRetry) {
-          return this.callWithRetry(input, true, retryCount);
+          return this.callWithRetry(input, true, retryCount, startTime);
         }
         throw new Error(
           `CLASSIFIER_BAD_OUTPUT: Output failed schema validation: ${validated.error.message}`
@@ -183,7 +210,21 @@ export class GeminiClassifierProvider implements ClassifierProvider {
     } catch (err: any) {
       const message = err.message || '';
 
-      // Check for rate limit (429) or transient server errors (5xx)
+      // Do NOT retry when the 429 is a daily quota error; fail immediately
+      if (isDailyQuotaError(message)) {
+        throw new Error(
+          'CLASSIFIER_UNAVAILABLE: The photo analyzer has hit its daily limit. Please try a sample or pick the item yourself.'
+        );
+      }
+
+      // Check if total time budget is exhausted
+      if (Date.now() - startTime >= TOTAL_TIME_BUDGET_MS) {
+        throw new Error(
+          'CLASSIFIER_UNAVAILABLE: Total classification time budget of 15 seconds exceeded.'
+        );
+      }
+
+      // Check for transient server errors or non-daily rate limit
       const isTransient =
         message.includes('429') ||
         message.includes('RESOURCE_EXHAUSTED') ||
@@ -194,10 +235,13 @@ export class GeminiClassifierProvider implements ClassifierProvider {
         message.includes('TIMEOUT');
 
       if (isTransient && retryCount < 1) {
-        // One retry with jittered backoff (400-800ms)
-        const jitter = Math.floor(400 + Math.random() * 400);
-        await new Promise((r) => setTimeout(r, jitter));
-        return this.callWithRetry(input, isRetry, retryCount + 1);
+        const remainingForRetry = TOTAL_TIME_BUDGET_MS - (Date.now() - startTime);
+        if (remainingForRetry > 1000) {
+          // One retry with jittered backoff (400-800ms) capped by remaining budget
+          const jitter = Math.min(Math.floor(400 + Math.random() * 400), remainingForRetry - 500);
+          await new Promise((r) => setTimeout(r, Math.max(100, jitter)));
+          return this.callWithRetry(input, isRetry, retryCount + 1, startTime);
+        }
       }
 
       if (message.includes('CLASSIFIER_BAD_OUTPUT')) {

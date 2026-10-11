@@ -71,7 +71,7 @@ We believe in honest, measured engineering:
 - **116 unit tests** passing with 100% coverage of the rules engine.
 - **14 automated E2E browser tests** with zero serious or critical issues in automated axe checks.
 - **Measured Cold Start (Demo Mode)**: Page load to network idle in 1,756ms, sample tap to decision in 89.9ms (total cold start 1,884ms).
-- **Measured Live Vision (Gemini 3.8 Flash)**: Small sample benchmark of 6 photos (24 live calls) observed p50 of 12,434ms, p95 of 40,672ms, and max of 41,320ms before reaching the 20 requests/day free tier quota.
+- **Measured Live Vision (Gemini 3.8 Flash)**: Across 24 live calls on 6 photos, 13 successful calls achieved a p50 of 6,621ms, p95 of 12,434ms, and max of 12,434ms with 100% schema validity; 11 calls were rate-limited by the free-tier daily cap (total time capped at 15s).
 - **Zero environmental quantity claims**: We strictly avoid unverifiable claims like _"You saved 4 kg of CO2"_. The tally states honestly: _"Items you marked as sorted: N (your own count)"_.
 - **Privacy Truth**: Images are never saved to disk by BinBuddy; they are transmitted in-memory over HTTPS to Google's Gemini API for classification.
 
@@ -80,7 +80,7 @@ We believe in honest, measured engineering:
 ## Limitations & Disclosures
 
 - **Municipal Scope**: Enforces an initial subset of 15 curbside residential rules for the City of Houston, Texas. Unhandled items (yard waste, bulky waste) route to manual city guidance or 311.
-- **Sample Size**: Live benchmarks were conducted on a small sample of 6 photos.
+- **Sample Size**: Live benchmarks were conducted on a small sample of 6 photos (13 successful, 11 rate-limited).
 - **AI-Assisted Development**: Developed with AI coding assistance (Antigravity). Five public hackathon repositories were inspected for structure and setup patterns only; zero application code was copied.
 
 ---

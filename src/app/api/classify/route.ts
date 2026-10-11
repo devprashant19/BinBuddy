@@ -134,7 +134,20 @@ export async function POST(req: NextRequest) {
         source = provider.name === 'gemini' ? 'live' : 'demo-sample';
       }
     } catch (err: any) {
-      if (err.message?.includes('CLASSIFIER_UNAVAILABLE')) {
+      const errMsg = err.message || '';
+      if (
+        errMsg.toLowerCase().includes('daily limit') ||
+        errMsg.toLowerCase().includes('per-day') ||
+        errMsg.toLowerCase().includes('perday')
+      ) {
+        return createErrorResponse(
+          'CLASSIFIER_UNAVAILABLE',
+          'The photo analyzer has hit its daily limit.',
+          'Try a sample or pick the item yourself.',
+          requestId
+        );
+      }
+      if (errMsg.includes('CLASSIFIER_UNAVAILABLE')) {
         return createErrorResponse(
           'CLASSIFIER_UNAVAILABLE',
           'Vision classifier is currently unavailable.',
