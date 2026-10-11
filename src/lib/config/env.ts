@@ -7,7 +7,7 @@ const envSchema = z.object({
   GEMINI_API_KEY: z.string().optional().default(''),
   GEMINI_MODEL: z.string().default('gemini-3.8-flash'),
   ELEVENLABS_API_KEY: z.string().optional().default(''),
-  ELEVENLABS_VOICE_ID: z.string().default('cicZiwk5NrFYKb3gi8in'),
+  ELEVENLABS_VOICE_ID: z.string().default('EXAVITQu4vr4xnSDxMaL'),
   ELEVENLABS_MODEL_ID: z.string().default('eleven_flash_v2_5'),
   CONFIDENCE_THRESHOLD: z.coerce.number().min(0).max(1).default(0.65),
   MAX_UPLOAD_MB: z.coerce.number().positive().default(8),

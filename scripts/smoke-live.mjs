@@ -273,7 +273,7 @@ if (elevenKey && elevenKey.trim()) {
     const { ElevenLabsClient } = await import('elevenlabs');
     const crypto = await import('crypto');
     const elevenClient = new ElevenLabsClient({ apiKey: elevenKey });
-    const voiceId = process.env.ELEVENLABS_VOICE_ID || 'cicZiwk5NrFYKb3gi8in';
+    const voiceId = process.env.ELEVENLABS_VOICE_ID || 'EXAVITQu4vr4xnSDxMaL';
     const modelId = process.env.ELEVENLABS_MODEL_ID || 'eleven_flash_v2_5';
     const testText = 'Clean aluminum cans belong in the green recycling cart.';
 

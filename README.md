@@ -84,7 +84,7 @@ To enable live photo analysis and high-fidelity speech:
    GEMINI_API_KEY=your_gemini_api_key
    GEMINI_MODEL=gemini-3.8-flash
    ELEVENLABS_API_KEY=your_elevenlabs_api_key
-   ELEVENLABS_VOICE_ID=cicZiwk5NrFYKb3gi8in
+   ELEVENLABS_VOICE_ID=EXAVITQu4vr4xnSDxMaL
    PROVIDER_MODE=auto
    ```
 3. Run the development or production server:

@@ -30,7 +30,7 @@ if (!apiKey || !apiKey.trim()) {
   process.exit(0);
 }
 
-const voiceId = process.env.ELEVENLABS_VOICE_ID || 'cicZiwk5NrFYKb3gi8in';
+const voiceId = process.env.ELEVENLABS_VOICE_ID || 'EXAVITQu4vr4xnSDxMaL';
 const modelId = process.env.ELEVENLABS_MODEL_ID || 'eleven_flash_v2_5';
 const audioCacheDir = path.resolve(rootDir, process.env.AUDIO_CACHE_DIR || '.cache/audio');
 
