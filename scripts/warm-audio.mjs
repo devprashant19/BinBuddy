@@ -47,7 +47,9 @@ if (!fs.existsSync(rulesPath)) {
 const ruleset = JSON.parse(fs.readFileSync(rulesPath, 'utf8'));
 const client = new ElevenLabsClient({ apiKey });
 
-console.log(`[warm-audio] Pre-warming audio for ruleset: ${ruleset.rulesetId} (${ruleset.rulesetVersion})...`);
+console.log(
+  `[warm-audio] Pre-warming audio for ruleset: ${ruleset.rulesetId} (${ruleset.rulesetVersion})...`
+);
 console.log(`[warm-audio] Target directory: ${audioCacheDir}`);
 console.log(`[warm-audio] Model: ${modelId}, Voice: ${voiceId}`);
 

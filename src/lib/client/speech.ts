@@ -103,10 +103,7 @@ function playHtmlAudio(url: string, onStateChange: (state: VoiceState) => void) 
   }
 }
 
-function fallbackToBrowserVoice(
-  narration: string,
-  onStateChange: (state: VoiceState) => void
-) {
+function fallbackToBrowserVoice(narration: string, onStateChange: (state: VoiceState) => void) {
   if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
     onStateChange('unavailable');
     return;

@@ -49,7 +49,8 @@ export const GEMINI_CLASSIFICATION_SCHEMA: Schema = {
     condition: {
       type: Type.STRING,
       enum: ['clean', 'soiled', 'unknown'],
-      description: 'Whether the item is clean and empty, or soiled with food, oil, or liquid residue.',
+      description:
+        'Whether the item is clean and empty, or soiled with food, oil, or liquid residue.',
     },
     visibleResinCode: {
       type: Type.STRING,

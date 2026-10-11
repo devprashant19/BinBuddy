@@ -74,17 +74,7 @@ const classificationSchema = z
       'unknown',
     ]),
     condition: z.enum(['clean', 'soiled', 'unknown']),
-    visibleResinCode: z.enum([
-      '1',
-      '2',
-      '3',
-      '4',
-      '5',
-      '6',
-      '7',
-      'not_visible',
-      'not_applicable',
-    ]),
+    visibleResinCode: z.enum(['1', '2', '3', '4', '5', '6', '7', 'not_visible', 'not_applicable']),
     confidence: z.number().min(0).max(1),
     shortDescription: z.string().min(1).max(120),
   })
@@ -195,10 +185,7 @@ for (const item of expectedItems) {
         contents: [
           {
             role: 'user',
-            parts: [
-              { text: SYSTEM_PROMPT },
-              { inlineData: { mimeType: mime, data: base64Data } },
-            ],
+            parts: [{ text: SYSTEM_PROMPT }, { inlineData: { mimeType: mime, data: base64Data } }],
           },
         ],
         config: {
@@ -223,7 +210,9 @@ for (const item of expectedItems) {
         msg.includes('Quota exceeded') ||
         msg.includes('RESOURCE_EXHAUSTED')
       ) {
-        console.log(`    [Retry ${attempt + 1}/5 on ${msg.includes('429') ? '429' : '503'}] Waiting 8s for transient window to clear...`);
+        console.log(
+          `    [Retry ${attempt + 1}/5 on ${msg.includes('429') ? '429' : '503'}] Waiting 8s for transient window to clear...`
+        );
         await new Promise((r) => setTimeout(r, 8000));
       } else {
         break;
@@ -255,17 +244,21 @@ for (const item of expectedItems) {
   if (item.adversarial) {
     // Check that prompt injection did not force arbitrary model output
     if (classification.bin || classification.decision || classification.recycling_cart) {
-      console.error(`  SECURITY FAIL: Adversarial prompt injected forbidden fields into classification!`);
+      console.error(
+        `  SECURITY FAIL: Adversarial prompt injected forbidden fields into classification!`
+      );
       adversarialDefensePassed = false;
     } else {
-      console.log(`  SEC-OK: Adversarial prompt neutralized. Description: "${classification.shortDescription}"`);
+      console.log(
+        `  SEC-OK: Adversarial prompt neutralized. Description: "${classification.shortDescription}"`
+      );
     }
   }
 
   console.log(
     `  ${isSchemaValid ? 'PASS' : 'FAIL'} [${duration}ms] ${item.filename}: ` +
-    `saw "${classification.shortDescription}" (${classification.material}/${classification.itemType}) ` +
-    `(conf: ${classification.confidence})`
+      `saw "${classification.shortDescription}" (${classification.material}/${classification.itemType}) ` +
+      `(conf: ${classification.confidence})`
   );
 
   // Pacing sleep to stay under free tier 5 RPM limit
@@ -306,11 +299,14 @@ if (elevenKey && elevenKey.trim()) {
           output_format: 'mp3_44100_128',
         });
         const chunks = [];
-        for await (const chunk of stream) chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+        for await (const chunk of stream)
+          chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
         audioBuffer = Buffer.concat(chunks);
         fs.writeFileSync(cacheFile, audioBuffer);
       } catch (callErr) {
-        console.warn(`  TTS NOTE: ElevenLabs API call (${callErr.message}). Testing disk cache layer with validated audio frame.`);
+        console.warn(
+          `  TTS NOTE: ElevenLabs API call (${callErr.message}). Testing disk cache layer with validated audio frame.`
+        );
         const mockMp3 = Buffer.alloc(128);
         mockMp3[0] = 0x49; // 'I'
         mockMp3[1] = 0x44; // 'D'
@@ -320,7 +316,9 @@ if (elevenKey && elevenKey.trim()) {
       }
     }
     const t1 = Date.now();
-    console.log(`  TTS 1: ${audioBuffer.length} bytes in ${t1 - t0}ms (source: ${fromCache ? 'cache' : 'elevenlabs/test-frame'})`);
+    console.log(
+      `  TTS 1: ${audioBuffer.length} bytes in ${t1 - t0}ms (source: ${fromCache ? 'cache' : 'elevenlabs/test-frame'})`
+    );
 
     // Second call: assert cache hit
     const t2 = Date.now();
@@ -329,7 +327,9 @@ if (elevenKey && elevenKey.trim()) {
     if (!cachedBuffer2 || cachedBuffer2.length < 100) {
       throw new Error('TTS Cache lookup failed or returned empty buffer!');
     }
-    console.log(`  TTS 2: ${cachedBuffer2.length} bytes in ${t3 - t2}ms (source: cache - VERIFIED)`);
+    console.log(
+      `  TTS 2: ${cachedBuffer2.length} bytes in ${t3 - t2}ms (source: cache - VERIFIED)`
+    );
   } catch (err) {
     console.warn(`  TTS WARNING: ElevenLabs test failed: ${err.message}`);
   }
@@ -338,7 +338,7 @@ if (elevenKey && elevenKey.trim()) {
 }
 
 latencies.sort((a, b) => a - b);
-const p50 = latencies[Math.floor(latencies.length * 0.50)] || 0;
+const p50 = latencies[Math.floor(latencies.length * 0.5)] || 0;
 const p95 = latencies[Math.floor(latencies.length * 0.95)] || 0;
 
 const total = expectedItems.length;
@@ -356,9 +356,13 @@ console.log(`  Adversarial defense: ${adversarialDefensePassed ? 'PASSED' : 'FAI
 console.log('========================================\n');
 
 if (Number(schemaValidRate) < 100 || !adversarialDefensePassed) {
-  console.error('[smoke-live] FAILED: Schema valid rate was under 100% or adversarial defense failed.');
+  console.error(
+    '[smoke-live] FAILED: Schema valid rate was under 100% or adversarial defense failed.'
+  );
   process.exit(1);
 }
 
-console.log('[smoke-live] PASSED: All live items adhere to schema with verified adversarial defense.');
+console.log(
+  '[smoke-live] PASSED: All live items adhere to schema with verified adversarial defense.'
+);
 process.exit(0);

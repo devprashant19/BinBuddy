@@ -74,8 +74,8 @@ export function VoiceButton({ ruleId, rulesetVersion, narration }: VoiceButtonPr
             voiceState === 'playing' || voiceState === 'fallback'
               ? 'border-ink bg-ink text-wash'
               : voiceState === 'unavailable'
-              ? 'cursor-not-allowed border-line bg-wash/50 text-muted opacity-60'
-              : 'border-line bg-surface text-ink hover:bg-wash'
+                ? 'cursor-not-allowed border-line bg-wash/50 text-muted opacity-60'
+                : 'border-line bg-surface text-ink hover:bg-wash'
           }`}
           aria-label={
             voiceState === 'playing' || voiceState === 'fallback'
@@ -90,7 +90,14 @@ export function VoiceButton({ ruleId, rulesetVersion, narration }: VoiceButtonPr
               fill="none"
               viewBox="0 0 24 24"
             >
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
               <path
                 className="opacity-75"
                 fill="currentColor"
@@ -125,7 +132,10 @@ export function VoiceButton({ ruleId, rulesetVersion, narration }: VoiceButtonPr
         </button>
 
         {voiceState === 'fallback' && (
-          <span className="rounded bg-wash px-2 py-0.5 text-xs text-muted" data-testid="voice-fallback-label">
+          <span
+            className="rounded bg-wash px-2 py-0.5 text-xs text-muted"
+            data-testid="voice-fallback-label"
+          >
             browser voice
           </span>
         )}

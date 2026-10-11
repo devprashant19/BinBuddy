@@ -65,10 +65,15 @@ export function SettingsModal({ isOpen, onClose, onTallyReset }: SettingsModalPr
           {/* Voice Setting */}
           <div className="flex items-center justify-between">
             <div>
-              <label htmlFor="settings-auto-speak" className="block text-sm font-medium text-ink cursor-pointer">
+              <label
+                htmlFor="settings-auto-speak"
+                className="block text-sm font-medium text-ink cursor-pointer"
+              >
                 Speak results automatically
               </label>
-              <p className="text-xs text-muted">Narration plays upon result arrival without tapping</p>
+              <p className="text-xs text-muted">
+                Narration plays upon result arrival without tapping
+              </p>
             </div>
             <input
               id="settings-auto-speak"
@@ -91,7 +96,9 @@ export function SettingsModal({ isOpen, onClose, onTallyReset }: SettingsModalPr
               </button>
             ) : (
               <div className="flex flex-col gap-2 rounded bg-wash p-3">
-                <p className="text-xs text-ink font-medium">Reset your personal sorted count to 0?</p>
+                <p className="text-xs text-ink font-medium">
+                  Reset your personal sorted count to 0?
+                </p>
                 <div className="flex items-center gap-2">
                   <button
                     type="button"

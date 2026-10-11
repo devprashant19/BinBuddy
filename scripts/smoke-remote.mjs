@@ -28,13 +28,15 @@ await check('GET / responds 200 and serves security headers', async () => {
   if (!res.ok) throw new Error(`Expected 200, got ${res.status}`);
 
   const nosniff = res.headers.get('x-content-type-options');
-  if (nosniff !== 'nosniff') throw new Error(`Missing or invalid X-Content-Type-Options: ${nosniff}`);
+  if (nosniff !== 'nosniff')
+    throw new Error(`Missing or invalid X-Content-Type-Options: ${nosniff}`);
 
   const xframe = res.headers.get('x-frame-options');
   if (xframe !== 'DENY') throw new Error(`Missing or invalid X-Frame-Options: ${xframe}`);
 
   const csp = res.headers.get('content-security-policy');
-  if (!csp || !csp.includes("default-src 'self'")) throw new Error(`Missing or invalid CSP: ${csp}`);
+  if (!csp || !csp.includes("default-src 'self'"))
+    throw new Error(`Missing or invalid CSP: ${csp}`);
 });
 
 // 2. Health endpoint

@@ -12,10 +12,7 @@ export interface RuleNarration {
  * Server-only helper: derives narration strictly from authoritative ruleset.
  * Arbitrary client-submitted text is NEVER accepted.
  */
-export function getNarrationForRule(
-  ruleId: string,
-  rulesetVersion: string
-): RuleNarration | null {
+export function getNarrationForRule(ruleId: string, rulesetVersion: string): RuleNarration | null {
   if (!ruleId || !rulesetVersion) {
     return null;
   }

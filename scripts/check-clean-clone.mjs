@@ -32,7 +32,9 @@ try {
   execSync('npm run check:load', { cwd: cloneDir, stdio: 'inherit' });
 
   console.log('\n========================================');
-  console.log('[check-clean-clone] PASSED: Clean clone builds, tests, and verifies 100% cleanly from scratch!');
+  console.log(
+    '[check-clean-clone] PASSED: Clean clone builds, tests, and verifies 100% cleanly from scratch!'
+  );
   console.log('========================================\n');
   process.exit(0);
 } catch (err) {

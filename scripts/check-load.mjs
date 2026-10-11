@@ -76,9 +76,14 @@ try {
   const totalDuration = Date.now() - startTime;
   const memAfter = process.memoryUsage().heapUsed;
 
-  console.log(`[check-load] Sample response 0: status ${results[0].status}:`, JSON.stringify(results[0].body));
+  console.log(
+    `[check-load] Sample response 0: status ${results[0].status}:`,
+    JSON.stringify(results[0].body)
+  );
 
-  const successCount = results.filter((r) => r.status === 200 && r.body.result?.status === 'decided').length;
+  const successCount = results.filter(
+    (r) => r.status === 200 && r.body.result?.status === 'decided'
+  ).length;
   const latencies = results.map((r) => r.latency).sort((a, b) => a - b);
   const p50 = latencies[Math.floor(latencies.length * 0.5)];
   const p95 = latencies[Math.floor(latencies.length * 0.95)];

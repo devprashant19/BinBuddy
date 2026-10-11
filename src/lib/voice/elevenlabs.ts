@@ -43,7 +43,10 @@ export class ElevenLabsService {
 
       // 10 second timeout
       const timeoutPromise = new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error('TIMEOUT: ElevenLabs TTS call exceeded 10 seconds')), 10000)
+        setTimeout(
+          () => reject(new Error('TIMEOUT: ElevenLabs TTS call exceeded 10 seconds')),
+          10000
+        )
       );
 
       const responseStream = await Promise.race([callPromise, timeoutPromise]);
@@ -70,7 +73,9 @@ export class ElevenLabsService {
 
     if (typeof stream.on === 'function') {
       return new Promise<Buffer>((resolve, reject) => {
-        stream.on('data', (chunk: any) => chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk)));
+        stream.on('data', (chunk: any) =>
+          chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk))
+        );
         stream.on('end', () => resolve(Buffer.concat(chunks)));
         stream.on('error', (err: any) => reject(err));
       });

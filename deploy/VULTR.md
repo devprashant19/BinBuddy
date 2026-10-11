@@ -35,11 +35,13 @@ This guide details the exact step-by-step procedure to provision and run BinBudd
 ## 3. Server Setup & Docker Installation
 
 SSH into your server:
+
 ```bash
 ssh root@<YOUR_VULTR_IP>
 ```
 
 Update system packages and install Docker with Docker Compose plugin:
+
 ```bash
 # Update repositories
 apt-get update && apt-get upgrade -y
@@ -72,6 +74,7 @@ docker compose version
 ## 4. Deploying BinBuddy
 
 1. Clone the repository:
+
 ```bash
 cd /opt
 git clone https://github.com/<YOUR_USER>/binbuddy.git
@@ -79,11 +82,14 @@ cd binbuddy
 ```
 
 2. Configure production environment variables:
+
 ```bash
 cp .env.example .env
 nano .env
 ```
+
 Fill in your production values:
+
 ```env
 DOMAIN=binbuddy.yourdomain.com
 GEMINI_API_KEY=your_gemini_api_key
@@ -96,17 +102,21 @@ APP_URL=https://binbuddy.yourdomain.com
 ```
 
 3. Build and launch containers in detached mode:
+
 ```bash
 docker compose up -d --build
 ```
 
 4. Verify running services:
+
 ```bash
 docker compose ps
 ```
+
 Both `app` and `caddy` should display `Up` / `healthy`.
 
 5. Check application and TLS logs:
+
 ```bash
 docker compose logs -f
 ```
@@ -116,6 +126,7 @@ docker compose logs -f
 ## 5. Updates & Zero-Downtime Rollout
 
 To deploy code updates:
+
 ```bash
 cd /opt/binbuddy
 git pull origin main
@@ -127,6 +138,7 @@ docker compose up -d --build
 ## 6. Rollback Procedure
 
 If a deployed build has issues:
+
 ```bash
 cd /opt/binbuddy
 git log --oneline -n 5

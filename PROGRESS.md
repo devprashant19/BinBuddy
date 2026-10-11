@@ -19,7 +19,7 @@
 - [x] Phase 6: Tally, settings, accessibility and copy pass
 - [x] Phase 7: Hardening, resilience and clean-clone test
 - [x] Phase 8: Docker, Vultr deployment and domain
-- [ ] Phase 9: README, assets and submission kit
+- [x] Phase 9: README, assets and submission kit
 
 ---
 
@@ -184,7 +184,7 @@
 
 ## Phase 8: Docker, Vultr deployment and domain (2026-10-11 12:05 IST)
 
-- **Commit**: pending
+- **Commit**: `cf053fd`
 - **Commands run and result**:
   - `npm run typecheck`: OK (0 errors)
   - `npm run lint`: OK (0 errors, 0 warnings)
@@ -206,6 +206,25 @@
 - **Not verified and why**:
   - Docker Desktop daemon is not running on the local Windows development host (`open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified`). Actual `docker build` and cloud VM provisioning are tracked as human-only actions in `HUMAN-TODO.md`. All configuration files (`Dockerfile`, `docker-compose.yml`, `Caddyfile`, `deploy/VULTR.md`, `deploy/DOMAIN.md`) are verified and complete.
 
+## Phase 9: README, assets and submission kit (2026-10-11 12:10 IST)
 
-
+- **Commit**: pending
+- **Commands run and result**:
+  - `npm run format:check`: OK (all codebase files strictly formatted with Prettier)
+  - `npm run verify:fast`: OK (typecheck, lint, 116 unit tests, check:rules, check:secrets)
+  - `npm run build`: OK (optimized production build, 111 kB First Load JS)
+  - `npm run test:e2e`: OK (14 Playwright tests passed in 10.2s)
+  - `npm run check:api`: OK (all 14 contract checks passed)
+  - `npm run check:load`: OK (20 concurrent requests: 20/20 200 OK, p50=238ms, p95=264ms)
+  - `node scripts/prepare-demo.mjs`: OK (pre-demo checklist verified across rules, cache, samples)
+  - `docs/09-DONE-CHECKLIST.md`: OK (all 20 checklist criteria verified passing or documented in HUMAN-TODO.md)
+  - Final `README.md`: OK (Mermaid diagrams, screenshots, fallback ladders, test instructions, security and limitations)
+  - `docs/architecture.md`, `docs/limitations.md`, `docs/ORIGINALITY.md`: OK (complete and verified)
+  - `SUBMISSION/`: OK (`devpost.md`, `demo-script.md`, `dev-article.md`, `track-checklist.md` ready for submission)
+- **Done Invariants**:
+  - Clean repository with zero secrets in tracked files or history.
+  - 100% functional in demo mode with zero API keys required.
+  - Transparent attribution and disclosures.
+- **Not verified and why**:
+  - Human-only submission steps (Devpost submission, recording live demo video, claiming GoDaddy domain, provisioning Vultr VM) tracked in `HUMAN-TODO.md`.
 

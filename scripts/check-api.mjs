@@ -39,7 +39,12 @@ try {
     serverProcess = spawn('npx', ['next', 'start', '-p', String(testPort)], {
       shell: true,
       stdio: 'pipe',
-      env: { ...process.env, PORT: String(testPort), NODE_ENV: 'production', PROVIDER_MODE: 'mock' },
+      env: {
+        ...process.env,
+        PORT: String(testPort),
+        NODE_ENV: 'production',
+        PROVIDER_MODE: 'mock',
+      },
     });
 
     const ready = await waitForServer(BASE_URL);
@@ -244,7 +249,9 @@ try {
     body: JSON.stringify({ ruleId: 'unknown-rule-xyz', rulesetVersion: '1.0.0' }),
   });
   if (speechUnknownRes.status !== 404) {
-    throw new Error(`Expected 404 for unknown ruleId in /api/speech, got ${speechUnknownRes.status}`);
+    throw new Error(
+      `Expected 404 for unknown ruleId in /api/speech, got ${speechUnknownRes.status}`
+    );
   }
   const speechUnknownData = await speechUnknownRes.json();
   if (speechUnknownData.error?.code !== 'RULE_NOT_FOUND') {

@@ -128,9 +128,9 @@ describe('Phase 5: Voice Unit Suite', () => {
       const service = new ElevenLabsService('dummy-key', 'voice-1', 'model-1');
       mockConvert.mockRejectedValueOnce(new Error('Rate limit or quota exceeded'));
 
-      await expect(
-        service.generateSpeech({ text: 'Test failure' })
-      ).rejects.toThrow(/VOICE_UNAVAILABLE/);
+      await expect(service.generateSpeech({ text: 'Test failure' })).rejects.toThrow(
+        /VOICE_UNAVAILABLE/
+      );
     });
   });
 });
