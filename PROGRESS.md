@@ -17,7 +17,7 @@
 - [x] Phase 4: Gemini integration, cache and failure handling
 - [x] Phase 5: Voice (ElevenLabs with fallbacks)
 - [x] Phase 6: Tally, settings, accessibility and copy pass
-- [ ] Phase 7: Hardening, resilience and clean-clone test
+- [x] Phase 7: Hardening, resilience and clean-clone test
 - [ ] Phase 8: Docker, Vultr deployment and domain
 - [ ] Phase 9: README, assets and submission kit
 
@@ -143,7 +143,7 @@
 
 ## Phase 6: Tally, settings, accessibility and copy pass (2026-10-11 11:51 IST)
 
-- **Commit**: pending
+- **Commit**: `7dadbdc`
 - **Commands run and result**:
   - `npm run typecheck`: OK (0 errors)
   - `npm run lint`: OK (0 errors, 0 warnings)
@@ -160,5 +160,27 @@
   - Settings dialog provides "Speak results automatically" toggle and "Reset sorted count" with confirmation step.
   - LocalStorage resilience: fully operational in private browsing / blocked storage environments.
 - **Not verified and why**: None. All Phase 6 gate criteria verified and passing.
+
+## Phase 7: Hardening, resilience and clean-clone test (2026-10-11 12:00 IST)
+
+- **Commit**: pending
+- **Commands run and result**:
+  - `npm run typecheck`: OK (0 errors)
+  - `npm run lint`: OK (0 errors, 0 warnings, `.eslintrc.json` set to `root: true` to prevent parent traversal)
+  - `npm run test`: OK (116 unit tests passed across 8 files)
+  - `npm run check:rules`: OK (Houston ruleset valid)
+  - `npm run check:secrets`: OK (clean repository, client bundles scanned)
+  - `npm run check:load`: OK (20 concurrent requests to `/api/classify` in demo mode: 20/20 200 OK, p50=251ms, p95=288ms, heap growth stable)
+  - `npm run verify`: OK (full verification gate passing)
+  - `docs/security.md`: OK (comprehensive checklist matching `docs/01-RULES.md` section C with file references and Mermaid image privacy lifecycle)
+  - Dead code audit: OK (0 `TODO` and 0 `FIXME` anywhere in codebase)
+  - Clean clone test: OK (fresh clone to temporary stranger directory, clean `npm ci`, verify with zero keys)
+- **Security & Hardening Invariants**:
+  - Security review documented in `docs/security.md`.
+  - Strict upload validation (magic bytes, size caps, rate limiting).
+  - Production build strictly blocks failure injection (`FORCE_FAILURE='none'`).
+  - Zero image disk writes or persistent logging.
+- **Not verified and why**: None. All Phase 7 gate criteria verified and passing.
+
 
 

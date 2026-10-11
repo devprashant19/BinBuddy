@@ -21,7 +21,8 @@
     "screenshots": "node scripts/screenshots.mjs",
     "smoke:live": "node scripts/smoke-live.mjs",
     "smoke:remote": "node scripts/smoke-remote.mjs",
-    "warm:audio": "node scripts/warm-audio.mjs"
+    "warm:audio": "node scripts/warm-audio.mjs",
+    "check:load": "node scripts/check-load.mjs"
   },
   "dependencies": {
     "@google/genai": "^0.2.0",

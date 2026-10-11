@@ -22,6 +22,7 @@ node_modules/
 # misc
 .DS_Store
 *.pem
+/.clone_test
 
 # debug
 npm-debug.log*
