@@ -156,4 +156,4 @@ docker compose logs -f
 
 ## License
 
-MIT © 2026 BinBuddy Authors. Built for CodeRED: Orion.
+MIT © 2026 BinBuddy Authors. See [LICENSE](LICENSE). Built for CodeRED: Orion.
