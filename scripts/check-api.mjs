@@ -227,6 +227,31 @@ try {
   }
   console.log('✓ Rejected oversized file with 413 IMAGE_TOO_LARGE');
 
+  // (g) POST /api/speech contracts
+  const speechBadRes = await fetch(`${BASE_URL}/api/speech`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({}),
+  });
+  if (speechBadRes.status !== 400) {
+    throw new Error(`Expected 400 for empty speech request, got ${speechBadRes.status}`);
+  }
+  console.log('✓ Rejected empty /api/speech with 400 BAD_REQUEST');
+
+  const speechUnknownRes = await fetch(`${BASE_URL}/api/speech`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ruleId: 'unknown-rule-xyz', rulesetVersion: '1.0.0' }),
+  });
+  if (speechUnknownRes.status !== 404) {
+    throw new Error(`Expected 404 for unknown ruleId in /api/speech, got ${speechUnknownRes.status}`);
+  }
+  const speechUnknownData = await speechUnknownRes.json();
+  if (speechUnknownData.error?.code !== 'RULE_NOT_FOUND') {
+    throw new Error(`Expected RULE_NOT_FOUND, got ${speechUnknownData.error?.code}`);
+  }
+  console.log('✓ Rejected unknown ruleId in /api/speech with 404 RULE_NOT_FOUND');
+
   // (g) Rate limiting test
   console.log('[check-api] Testing rate limit threshold (20 req/min)...');
   let tripped = false;

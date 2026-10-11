@@ -62,7 +62,11 @@ export function ResultSheet({
         {/* Action Button Row */}
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex-1 min-w-[140px]">
-            <VoiceButton disabled={true} />
+            <VoiceButton
+              ruleId={decision.ruleId}
+              rulesetVersion={rulesetVersion}
+              narration={decision.reason}
+            />
           </div>
 
           <button

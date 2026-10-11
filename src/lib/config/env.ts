@@ -5,7 +5,7 @@ const envSchema = z.object({
   PORT: z.string().default('3000'),
   PROVIDER_MODE: z.enum(['auto', 'mock']).default('auto'),
   GEMINI_API_KEY: z.string().optional().default(''),
-  GEMINI_MODEL: z.string().default('gemini-2.5-flash'),
+  GEMINI_MODEL: z.string().default('gemini-3.8-flash'),
   ELEVENLABS_API_KEY: z.string().optional().default(''),
   ELEVENLABS_VOICE_ID: z.string().default('cicZiwk5NrFYKb3gi8in'),
   ELEVENLABS_MODEL_ID: z.string().default('eleven_flash_v2_5'),

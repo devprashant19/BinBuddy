@@ -201,4 +201,114 @@ test.describe('Phase 3 Complete UI Suite', () => {
     await page.click('button:has-text("Pick it yourself")');
     await expect(page.locator('text=Pick the item yourself')).toBeVisible();
   });
+
+  test('Voice flow: zero audio requested without user tap; tapping Hear it fetches /api/speech', async ({
+    page,
+  }) => {
+    const audioRequests: string[] = [];
+    await page.route('**/api/speech', (route) => {
+      audioRequests.push(route.request().url());
+      const fakeMp3 = Buffer.alloc(120);
+      fakeMp3[0] = 0x49; // 'I'
+      fakeMp3[1] = 0x44; // 'D'
+      fakeMp3[2] = 0x33; // '3'
+      return route.fulfill({
+        status: 200,
+        contentType: 'audio/mpeg',
+        headers: { 'X-Audio-Source': 'elevenlabs' },
+        body: fakeMp3,
+      });
+    });
+
+    await page.goto('/');
+
+    // Select sample to reach result sheet
+    await page.click('button:has-text("Plastic Water Bottle")');
+    await expect(page.locator('#destination-heading')).toBeVisible();
+
+    // CRITICAL INVARIANT: Zero audio requested automatically without user tap
+    expect(audioRequests.length).toBe(0);
+
+    // Tap "Hear it"
+    const voiceBtn = page.locator('button[data-testid="voice-button"]');
+    await expect(voiceBtn).toBeVisible();
+    await voiceBtn.click();
+
+    // Exactly one audio request fired upon user tap
+    expect(audioRequests.length).toBe(1);
+  });
+
+  test('Voice fallback flow: when /api/speech returns VOICE_UNAVAILABLE, uses browser voice and displays label', async ({
+    page,
+  }) => {
+    page.on('console', (msg) => console.log('PAGE LOG:', msg.text()));
+    // Inject mock speechSynthesis and SpeechSynthesisUtterance
+    await page.addInitScript(() => {
+      (window as any).__spokenUtterances = [];
+      if ('speechSynthesis' in window && window.speechSynthesis) {
+        window.speechSynthesis.speak = (utterance: any) => {
+          (window as any).__spokenUtterances.push(utterance.text || 'spoken');
+          if (utterance.onstart) utterance.onstart();
+        };
+        window.speechSynthesis.cancel = () => {};
+      } else {
+        class MockUtterance {
+          text: string;
+          rate = 1.0;
+          pitch = 1.0;
+          onstart: any = null;
+          onend: any = null;
+          onerror: any = null;
+          constructor(text: string) {
+            this.text = text;
+          }
+        }
+        Object.defineProperty(window, 'SpeechSynthesisUtterance', {
+          configurable: true,
+          value: MockUtterance,
+        });
+        Object.defineProperty(window, 'speechSynthesis', {
+          configurable: true,
+          value: {
+            speak: (utterance: any) => {
+              (window as any).__spokenUtterances.push(utterance.text || 'spoken');
+              if (utterance.onstart) utterance.onstart();
+            },
+            cancel: () => {},
+          },
+        });
+      }
+    });
+
+    // Intercept /api/speech to simulate unavailable ElevenLabs
+    await page.route('**/api/speech', (route) =>
+      route.fulfill({
+        status: 503,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          error: {
+            code: 'VOICE_UNAVAILABLE',
+            message: 'ElevenLabs voice unavailable.',
+          },
+        }),
+      })
+    );
+
+    await page.goto('/');
+
+    // Select sample to reach result sheet
+    await page.click('button:has-text("Plastic Water Bottle")');
+    await expect(page.locator('#destination-heading')).toBeVisible();
+
+    // Tap "Hear it"
+    const voiceBtn = page.locator('button[data-testid="voice-button"]');
+    await voiceBtn.click();
+
+    // Verify browser voice label appears
+    await expect(page.locator('[data-testid="voice-fallback-label"]')).toBeVisible();
+
+    // Verify synthesis was invoked
+    const spoken = await page.evaluate(() => (window as any).__spokenUtterances);
+    expect(spoken.length).toBeGreaterThan(0);
+  });
 });

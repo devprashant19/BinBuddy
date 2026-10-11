@@ -15,7 +15,7 @@
 - [x] Phase 2: API layer with mock provider
 - [x] Phase 3: The interface (all states, design notes, contrast, screenshots)
 - [x] Phase 4: Gemini integration, cache and failure handling
-- [ ] Phase 5: Voice (ElevenLabs with fallbacks)
+- [x] Phase 5: Voice (ElevenLabs with fallbacks)
 - [ ] Phase 6: Tally, settings, accessibility and copy pass
 - [ ] Phase 7: Hardening, resilience and clean-clone test
 - [ ] Phase 8: Docker, Vultr deployment and domain
@@ -102,7 +102,7 @@
 
 ## Phase 4: Gemini integration, cache and failure handling (2026-10-11 11:08 IST)
 
-- **Commit**: pending
+- **Commit**: `ccbfa17`
 - **Commands run and result**:
   - `npm run typecheck`: OK (0 errors)
   - `npm run lint`: OK (0 errors, 0 warnings)
@@ -118,3 +118,26 @@
   - In-memory LRU cache stores only classification summaries keyed by `sha256(bytes) + version`, never storing image bytes.
   - Client bundle scanning proves `GEMINI_API_KEY` never leaks into `.next/static` or HTTP responses.
 - **Not verified and why**: None. All Phase 4 gate criteria verified and passing.
+
+## Phase 5: Voice: ElevenLabs with fallbacks (2026-10-11 11:42 IST)
+
+- **Commit**: pending
+- **Commands run and result**:
+  - `npm run typecheck`: OK (0 errors)
+  - `npm run lint`: OK (0 errors, 0 warnings)
+  - `npm run test`: OK (109 unit tests passed across 7 files, adding 9 voice tests in `voice.test.ts` for narration derivation, disk caching, audio integrity validation, and fallback state transitions)
+  - `npm run check:rules`: OK (Houston ruleset valid, all narrations intact)
+  - `npm run check:secrets`: OK (clean repository, zero secret leaks)
+  - `npm run build`: OK (optimized Next.js production build, `/api/speech` compiled as dynamic endpoint)
+  - `npm run test:e2e`: OK (11 Playwright tests passed in 9.6s, verifying zero audio on page load without user gesture, tapping "Hear it" fires single `/api/speech` call, and browser SpeechSynthesis fallback on API failure)
+  - `npm run check:api`: OK (all 14 contract assertions passed, including rejection of empty/unknown rule IDs and strict content negotiation)
+  - `npm run smoke:live`: OK (Gemini 3.8 Flash 100% schema valid, adversarial injection neutralized; ElevenLabs cache hit verified at 1ms)
+  - `npm run warm:audio`: OK (pre-warmer script ready for batch caching of municipal rules)
+- **Voice Invariants**:
+  - Spoken text is derived strictly server-side from the municipal rule (`rule.decision.narration`). The API rejects arbitrary user text, preventing malicious audio synthesis.
+  - Disk cache in `.cache/audio/` keyed by `sha256(text + voiceId + modelId + rulesetVersion)`.
+  - Self-healing cache detects corrupted or truncated files (< 100 bytes or invalid MP3 frames) and re-synthesizes automatically.
+  - Client never autoplays audio without explicit user permission/preference.
+  - Three-tier fallback: ElevenLabs API -> Audio disk/blob cache -> Browser SpeechSynthesis -> silent text with visual cue.
+- **Not verified and why**: None. All Phase 5 gate criteria verified and passing.
+

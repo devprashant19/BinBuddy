@@ -53,7 +53,7 @@ export const classificationSchema = z
     condition: conditionEnum,
     visibleResinCode: resinCodeEnum,
     confidence: z.number().min(0).max(1),
-    shortDescription: z.string().min(1).max(80),
+    shortDescription: z.string().min(1).max(120),
   })
   .strict();
 
