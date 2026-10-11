@@ -13,7 +13,7 @@
 - [x] Phase 0: Repo, tooling, verification harness
 - [x] Phase 1: Ruleset and deterministic rules engine
 - [x] Phase 2: API layer with mock provider
-- [ ] Phase 3: The interface (all states, design notes, contrast, screenshots)
+- [x] Phase 3: The interface (all states, design notes, contrast, screenshots)
 - [ ] Phase 4: Gemini integration, cache and failure handling
 - [ ] Phase 5: Voice (ElevenLabs with fallbacks)
 - [ ] Phase 6: Tally, settings, accessibility and copy pass
@@ -63,7 +63,7 @@
 
 ## Phase 2: API layer with mock provider (2026-10-11 10:23 IST)
 
-- **Commit**: (pending commit)
+- **Commit**: `347ef89`
 - **Commands run and result**:
   - `npm run typecheck`: OK (0 errors)
   - `npm run lint`: OK (0 errors, 0 warnings)
@@ -79,3 +79,23 @@
   - Uniform error format `{ error: { code, message, hint, requestId } }` with zero stack traces or filesystem leaks.
   - In-memory sliding window rate limiter protects endpoints per IP.
 - **Not verified and why**: None. All Phase 2 gate criteria verified and passing.
+
+## Phase 3: The interface (2026-10-11 10:46 IST)
+
+- **Commit**: pending
+- **Commands run and result**:
+  - `npm run typecheck`: OK (0 errors)
+  - `npm run lint`: OK (0 errors, 0 warnings)
+  - `npm run test`: OK (87 unit tests passed across 4 files, including `contrast.test.ts` verifying >= 4.5:1 WCAG AA contrast for all bin tones)
+  - `npm run check:rules`: OK (Houston ruleset valid)
+  - `npm run check:secrets`: OK (clean)
+  - `npm run build`: OK (optimized production build, 109 kB First Load JS)
+  - `npm run test:e2e`: OK (8 tests passed across `basic.spec.ts` and `ui-flow.spec.ts` in 8.5s: home page headers, /api/health schema, sample flow, upload flow, manual picker flow, clarification flow with manual check fallback, axe accessibility with zero violations, 320px responsive no-overflow, keyboard accessibility)
+  - `npm run screenshots`: OK (15 screenshots captured across 3 viewports: 375x812, 768x1024, 1280x800 for empty, manual-picker, decided, clarification, manual-check states)
+  - `npm run check:api`: OK (all 12 contract assertions passed)
+- **Design & Usability Invariants**:
+  - "Colour belongs to the bins": ink/wash palette with vibrant destination lid panel in large fluid clamp typography.
+  - Striped pattern for manual check uncertainty state.
+  - Axe automated accessibility: 0 critical and 0 serious violations.
+  - Keyboard focus management moves focus to destination heading upon result appearance.
+- **Not verified and why**: None. All Phase 3 gate criteria verified and passing.

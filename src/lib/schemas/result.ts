@@ -48,9 +48,9 @@ export const resultSchema = z.discriminatedUnion('status', [
 ]);
 
 export const answersSchema = z.object({
-  material: materialEnum.optional(),
-  condition: conditionEnum.optional(),
-  resinCode: resinCodeEnum.optional(),
+  material: z.union([materialEnum, z.literal('not_sure')]).optional(),
+  condition: z.union([conditionEnum, z.literal('not_sure')]).optional(),
+  resinCode: z.union([resinCodeEnum, z.literal('not_sure')]).optional(),
 });
 
 export type Decision = z.infer<typeof decisionSchema>;

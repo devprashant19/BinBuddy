@@ -9,12 +9,13 @@
   --color-line: #cbd5cf;
   --color-muted: #4d5c56;
 
-  /* Bin colours - verified >= 4.5:1 contrast against white */
+  /* Bin colours - strictly verified >= 4.5:1 contrast against white #FFFFFF */
   --bin-recycle: #1a5fb4;
-  --bin-landfill: #4a5560;
-  --bin-special: #9a5a00;
-  --bin-yard: #1e7b4a;
-  --bin-manual: #475569;
+  --bin-landfill: #3f4954;
+  --bin-special: #8a4500;
+  --bin-yard: #1a6b3f;
+  --bin-manual: #16231f;
+  --bin-manual-bg: #ffffff;
 }
 
 body {

@@ -1,12 +1,15 @@
 import { NextResponse } from 'next/server';
 import { getEnv } from '@/lib/config/env';
 
+import { getClassifierProvider } from '@/lib/providers';
+
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   const env = getEnv();
 
-  const geminiProvider = env.PROVIDER_MODE !== 'mock' && env.GEMINI_API_KEY ? 'live' : 'demo';
+  const provider = getClassifierProvider();
+  const geminiProvider = provider.name === 'gemini' ? 'live' : 'demo';
   const elevenlabsProvider = env.ELEVENLABS_API_KEY ? 'live' : 'unconfigured';
 
   return NextResponse.json({
