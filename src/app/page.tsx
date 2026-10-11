@@ -11,6 +11,7 @@ import { ManualCheckPanel } from '@/components/ManualCheckPanel';
 import { ManualPicker } from '@/components/ManualPicker';
 import { ErrorPanel } from '@/components/ErrorPanel';
 import { TallyBar } from '@/components/TallyBar';
+import { incrementTally } from '@/lib/client/tally';
 import {
   fetchHealth,
   fetchFixtures,
@@ -192,7 +193,7 @@ export default function HomePage() {
   const handleMarkSorted = () => {
     if (!isSorted) {
       setIsSorted(true);
-      setSortedCount((c) => c + 1);
+      incrementTally();
     }
   };
 
@@ -275,7 +276,7 @@ export default function HomePage() {
       </div>
 
       <div className="mt-8 flex flex-col gap-4">
-        <TallyBar count={sortedCount} />
+        <TallyBar />
         <Footer
           sourceUrl={rules?.sourceUrl}
           rulesetVersion={rules?.version}

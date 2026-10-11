@@ -87,3 +87,26 @@ All bin colors are mathematically verified to exceed WCAG AA contrast (minimum 4
 - **Axe-core Playwright Audit**: 0 critical, 0 serious accessibility violations across all states.
 - **Narrow Viewport (320px width)**: Confirmed `scrollWidth <= clientWidth` with 0 horizontal overflow.
 - **Keyboard Navigation**: Full tab/enter sequence operable with explicit focus movement to `#destination-heading`.
+
+---
+
+## 6. Phase 6 Polish: Tally Bar, Settings Modal, and Copy Invariants
+
+### Personal Tally Bar
+- Positioned above footer, styled in quiet `#F1F4F1` wash with hairline border.
+- Strict wording: `"Items you marked as sorted: N (your own count)"`.
+- **Absolute ban on environmental quantity claims**: zero CO2, kg saved, landfill diverted, or carbon offset metrics anywhere. Verified via automated E2E regex tests on DOM text.
+- Increments strictly when the user taps `[I sorted it]` on a decided result sheet.
+- LocalStorage key `binbuddy.tally.v1` with try/catch fallback to in-memory state when storage is restricted (private browsing).
+
+### Settings Modal & Voice Control
+- Small, accessible popover dialog with proper `role="dialog"`, `aria-modal="true"`, and `aria-labelledby="settings-heading"`.
+- "Speak results automatically" toggle (off by default), persisting to `binbuddy:auto_speak`.
+- "Reset sorted count" button with two-step confirmation dialog ("Reset your personal sorted count to 0?").
+
+### Footer Verification
+- Rules source attribution: "Source: City of Houston Solid Waste Management Department".
+- Complete version and verification metadata: `(v1.0.0, verified 2026-10-10)`.
+- Privacy disclosure: "Photos are sent to Gemini to describe the item. BinBuddy does not store them."
+- Attribution: "Built during CodeRED: Orion • Hackathon 2026".
+

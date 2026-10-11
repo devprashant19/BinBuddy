@@ -311,4 +311,108 @@ test.describe('Phase 3 Complete UI Suite', () => {
     const spoken = await page.evaluate(() => (window as any).__spokenUtterances);
     expect(spoken.length).toBeGreaterThan(0);
   });
+
+  test('Tally flow: increments only on sorted confirm, survives page reload, and resets with confirmation', async ({
+    page,
+  }) => {
+    await page.goto('/');
+
+    const tallyEl = page.locator('[data-testid="tally-count"]');
+    await expect(tallyEl).toHaveText(/Items you marked as sorted: 0 \(your own count\)/);
+
+    // Reach decided result sheet
+    await page.click('button:has-text("Soda Can")');
+    await expect(page.locator('#destination-heading')).toBeVisible();
+
+    // Verify tally is still 0 before clicking confirm
+    await expect(tallyEl).toHaveText(/Items you marked as sorted: 0 \(your own count\)/);
+
+    // Tap "I sorted it"
+    const sortBtn = page.locator('button:has-text("I sorted it")');
+    await sortBtn.click();
+    await expect(page.locator('button:has-text("Sorted!")')).toBeVisible();
+
+    // Verify tally incremented to 1
+    await expect(tallyEl).toHaveText(/Items you marked as sorted: 1 \(your own count\)/);
+
+    // Reload page to test persistence
+    await page.reload();
+    await expect(page.locator('[data-testid="tally-count"]')).toHaveText(
+      /Items you marked as sorted: 1 \(your own count\)/
+    );
+
+    // Open settings and reset tally
+    await page.click('[data-testid="settings-button"]');
+    await expect(page.locator('#settings-heading')).toBeVisible();
+
+    await page.click('button:has-text("Reset sorted count")');
+    await expect(page.locator('text=Reset your personal sorted count to 0?')).toBeVisible();
+
+    await page.click('button:has-text("Yes, reset")');
+    await page.click('button:has-text("Done")');
+
+    await expect(page.locator('[data-testid="tally-count"]')).toHaveText(
+      /Items you marked as sorted: 0 \(your own count\)/
+    );
+  });
+
+  test('Storage blocked resilience: app functions completely when localStorage is blocked', async ({
+    page,
+  }) => {
+    // Block localStorage
+    await page.addInitScript(() => {
+      Object.defineProperty(window, 'localStorage', {
+        value: {
+          getItem: () => {
+            throw new Error('SecurityError: Access is denied for this document.');
+          },
+          setItem: () => {
+            throw new Error('SecurityError: Access is denied for this document.');
+          },
+          removeItem: () => {},
+          clear: () => {},
+        },
+        writable: false,
+      });
+    });
+
+    await page.goto('/');
+    await expect(page.locator('[data-testid="tally-count"]')).toBeVisible();
+
+    // Select sample to reach result
+    await page.click('button:has-text("Soda Can")');
+    await expect(page.locator('#destination-heading')).toBeVisible();
+
+    // Sort button works in-memory without throw
+    await page.click('button:has-text("I sorted it")');
+    await expect(page.locator('button:has-text("Sorted!")')).toBeVisible();
+  });
+
+  test('Hard Invariant: zero environmental claims anywhere in the DOM', async ({ page }) => {
+    await page.goto('/');
+
+    const emptyText = await page.locator('body').innerText();
+    const forbiddenPatterns = [
+      /\bCO2\b/i,
+      /\bkg\s+saved\b/i,
+      /\bsaved\s+kg\b/i,
+      /\blandfill\s+diverted\b/i,
+      /\bdiverted\s+from\s+landfill\b/i,
+      /\bcarbon\s+offset\b/i,
+      /\bemissions\s+saved\b/i,
+    ];
+
+    for (const pattern of forbiddenPatterns) {
+      expect(emptyText).not.toMatch(pattern);
+    }
+
+    // Check decided state as well
+    await page.click('button:has-text("Plastic Water Bottle")');
+    await expect(page.locator('#destination-heading')).toBeVisible();
+
+    const resultText = await page.locator('body').innerText();
+    for (const pattern of forbiddenPatterns) {
+      expect(resultText).not.toMatch(pattern);
+    }
+  });
 });

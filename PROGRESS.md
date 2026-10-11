@@ -16,7 +16,7 @@
 - [x] Phase 3: The interface (all states, design notes, contrast, screenshots)
 - [x] Phase 4: Gemini integration, cache and failure handling
 - [x] Phase 5: Voice (ElevenLabs with fallbacks)
-- [ ] Phase 6: Tally, settings, accessibility and copy pass
+- [x] Phase 6: Tally, settings, accessibility and copy pass
 - [ ] Phase 7: Hardening, resilience and clean-clone test
 - [ ] Phase 8: Docker, Vultr deployment and domain
 - [ ] Phase 9: README, assets and submission kit
@@ -121,7 +121,7 @@
 
 ## Phase 5: Voice: ElevenLabs with fallbacks (2026-10-11 11:42 IST)
 
-- **Commit**: pending
+- **Commit**: `7cb549a`
 - **Commands run and result**:
   - `npm run typecheck`: OK (0 errors)
   - `npm run lint`: OK (0 errors, 0 warnings)
@@ -140,4 +140,25 @@
   - Client never autoplays audio without explicit user permission/preference.
   - Three-tier fallback: ElevenLabs API -> Audio disk/blob cache -> Browser SpeechSynthesis -> silent text with visual cue.
 - **Not verified and why**: None. All Phase 5 gate criteria verified and passing.
+
+## Phase 6: Tally, settings, accessibility and copy pass (2026-10-11 11:51 IST)
+
+- **Commit**: pending
+- **Commands run and result**:
+  - `npm run typecheck`: OK (0 errors)
+  - `npm run lint`: OK (0 errors, 0 warnings)
+  - `npm run test`: OK (116 unit tests passed across 8 files, adding 7 tally tests in `tally.test.ts` covering increment, reset, corrupted data recovery, and throw resilience)
+  - `npm run check:rules`: OK (Houston ruleset valid)
+  - `npm run check:secrets`: OK (clean repository)
+  - `npm run build`: OK (optimized production build, 111 kB First Load JS)
+  - `npm run test:e2e`: OK (14 Playwright tests passed in 11.1s, adding tests for tally incrementing only on user action, surviving reloads, resetting with confirmation dialog, resilience when storage is blocked, and DOM text assertion proving zero environmental claims)
+  - `npm run screenshots`: OK (refreshed 15 screenshots across mobile, tablet, desktop viewports)
+  - `npm run check:api`: OK (all 14 API contract tests passed)
+- **Copy & Feature Invariants**:
+  - Tally label strictly formatted: `"Items you marked as sorted: N (your own count)"`.
+  - Zero environmental claims anywhere in the app (no CO2, kg, saved, or diverted claims).
+  - Settings dialog provides "Speak results automatically" toggle and "Reset sorted count" with confirmation step.
+  - LocalStorage resilience: fully operational in private browsing / blocked storage environments.
+- **Not verified and why**: None. All Phase 6 gate criteria verified and passing.
+
 
