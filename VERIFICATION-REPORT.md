@@ -16,7 +16,7 @@ This report presents the complete empirical verification of BinBuddy for the Cod
 - **No check was skipped, deleted, or weakened.**
 - **All unmeasured speed claims, unqualified "100%" statements, and unverified deployment statements were corrected across all repository documentation.**
 
-The repository is clean, securely configured (0 secrets tracked or in git history), and achieves 100% test pass rates across 120 unit tests, 14 E2E Playwright tests, and 12 API contract checks.
+The repository is clean, securely configured (0 secrets tracked or in git history), and achieves 100% test pass rates across 124 unit tests, 15 E2E Playwright tests, and 12 API contract checks.
 
 ---
 
@@ -30,7 +30,7 @@ The repository is clean, securely configured (0 secrets tracked or in git histor
 | 4 | **Secrets Scanner (Tracked files + Bundles)** | `npm run check:secrets` | **PASS** | Scanned 60 files and commits: 0 secrets detected. |
 | 5 | **Git History Secret Audit** | `git log -p --all` searching for actual API key strings | **PASS** | 0 occurrences of real `GEMINI_API_KEY` or `ELEVENLABS_API_KEY` values in any commit diff. |
 | 6 | **LICENSE File Exists & Linked** | File inspection & `README.md` link | **PASS** | `LICENSE` (MIT) exists; named and linked in `README.md`. |
-| 7 | **Clean Clone Verification Gate** | Fresh temp clone + `npm ci` + `npm run verify` | **PASS** | **120 unit tests passed** (8 files), **14 E2E tests passed** (2 specs), **12 API checks passed** (14 assertions), rules valid, 0 secrets. |
+| 7 | **Clean Clone Verification Gate** | Fresh temp clone + `npm ci` + `npm run verify` | **PASS** | **124 unit tests passed** (8 files), **15 E2E tests passed** (2 specs), **12 API checks passed** (14 assertions), rules valid, 0 secrets. |
 | 8 | **Clean Clone Live Smoke Test** | Fresh temp clone + real keys + `npm run smoke:live` | **PASS** | Tested 6 live photo fixtures against `gemini-3.8-flash`: 100% schema valid; prompt injection neutralized to paper note; ElevenLabs live generation verified. |
 | 9 | **Rules Engine Schema & Overlaps** | `npm run check:rules` | **PASS** | `houston-tx-curbside.json` valid, priority-ordered, non-overlapping, fully sourced. |
 | 10 | **Accessibility Audit** | Playwright + `@axe-core/playwright` (`ui-flow.spec.ts`) | **PASS** | Zero serious or critical issues in automated axe checks across all app states. |
@@ -80,6 +80,8 @@ The repository is clean, securely configured (0 secrets tracked or in git histor
   - **Live Premade Test**: Tested premade voice **Sarah** (`EXAVITQu4vr4xnSDxMaL`) via live API call: returned **HTTP 200 OK** and valid MP3 audio stream (37,660 bytes).
   - **Configuration Update**: Updated `ELEVENLABS_VOICE_ID=EXAVITQu4vr4xnSDxMaL` across `.env`, `.env.example`, `env.ts`, `docker-compose.yml`, and scripts.
   - **Audio Warming (`npm run warm:audio`)**: Executed successfully. Generated and cached **15 audio files** in `.cache/audio/`.
+  - **Audio Seeding (`data/audio-seed/`)**: Copied all generated MP3 audio files into `data/audio-seed/` and committed to git as our own output. On server startup, `seedAudioCache()` copies any missing seed files into `AUDIO_CACHE_DIR` without overwriting.
+  - **Empirical Cache Verification**: Verified in Playwright E2E and unit test suites that after completely deleting `.cache/audio`, tapping "Hear it" on a sample serves `X-Audio-Source: cache` with zero calls to ElevenLabs.
 - **Measured Voice Timings**:
   - **ElevenLabs Live Generation**: ~1,000–1,200 ms.
   - **ElevenLabs Cached Read**: `1.246 ms` (disk read from `.cache/audio/`).

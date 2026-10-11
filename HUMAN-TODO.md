@@ -21,13 +21,14 @@ This file tracks tasks that require human authorization, credentials, physical d
    npm run smoke:live
    ```
 
-## 3. Audio Pre-warming
+## 3. Audio Pre-warming & Seeding
 
-Note: `scripts/warm-audio.mjs` is intentionally excluded from the production Docker container to keep the image minimal.
+Audio files are now **pre-seeded in `data/audio-seed/`** directly in the repository and included in the Docker container image. On server startup, BinBuddy automatically copies any missing seed files into `.cache/audio/` without overwriting existing files. Zero manual pre-warming is required for production deployments.
 
-To warm the audio cache on the server:
-- **Option A (Before container build / on host)**: Run `npm run warm:audio` in the cloned repo on the host VM so that `.cache/audio/` is populated before `docker compose up`, or bind-mount `.cache/audio` into `/app/.cache/audio`.
-- **Option B (After deploy)**: Visit the live web app and tap each of the 8 sample buttons once. Tapping generates and caches the audio dynamically to disk for all subsequent requests. If ElevenLabs is unconfigured or unavailable, browser speech synthesis immediately plays aloud without server audio files.
+If you add new municipal rules or want to regenerate audio:
+- Run `npm run warm:audio` in the cloned repo on the host to generate new audio into `.cache/audio/`.
+- Copy any updated files into `data/audio-seed/` to persist them across container builds.
+- If ElevenLabs is unconfigured or unavailable, browser speech synthesis immediately plays aloud without server audio files.
 
 ## 4. Vultr Server Deployment
 

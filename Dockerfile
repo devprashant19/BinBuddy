@@ -37,12 +37,12 @@ RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
 # Set up required directories
-RUN mkdir -p public data .cache/audio && \
-    chown -R nextjs:nodejs .cache
+RUN mkdir -p public data/audio-seed .cache/audio && \
+    chown -R nextjs:nodejs .cache data
 
-# Copy public assets and rulesets
+# Copy public assets, rulesets, and pre-generated audio seeds
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/data ./data
+COPY --from=builder --chown=nextjs:nodejs /app/data ./data
 
 # Copy Next.js standalone build output
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./

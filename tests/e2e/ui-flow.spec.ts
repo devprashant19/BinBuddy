@@ -1,5 +1,7 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import fs from 'fs';
+import path from 'path';
 
 test.describe('Phase 3 Complete UI Suite', () => {
   test('Sample flow: selects sample fixture to reach decided result sheet and disclosure', async ({
@@ -236,6 +238,41 @@ test.describe('Phase 3 Complete UI Suite', () => {
 
     // Exactly one audio request fired upon user tap
     expect(audioRequests.length).toBe(1);
+  });
+
+  test('Audio seeding: after deleting .cache/audio, tapping Hear it on a sample serves X-Audio-Source: cache with no ElevenLabs call', async ({
+    page,
+  }) => {
+    // 1. Delete .cache/audio before test to simulate fresh environment
+    const cacheDir = path.resolve(process.cwd(), '.cache/audio');
+    if (fs.existsSync(cacheDir)) {
+      fs.rmSync(cacheDir, { recursive: true, force: true });
+    }
+    expect(fs.existsSync(cacheDir)).toBe(false);
+
+    // 2. Load page
+    await page.goto('/');
+
+    // 3. Select sample (Soda Can -> metal-can-clean)
+    await page.click('button:has-text("Soda Can")');
+    await expect(page.locator('#destination-heading')).toBeVisible();
+
+    // 4. Tap "Hear it" without mocking /api/speech
+    const voiceBtn = page.locator('button[data-testid="voice-button"]');
+    await expect(voiceBtn).toBeVisible();
+
+    const [speechResponse] = await Promise.all([
+      page.waitForResponse((res) => res.url().includes('/api/speech')),
+      voiceBtn.click(),
+    ]);
+
+    // 5. Verify response is served directly from cache seeded from data/audio-seed/
+    expect(speechResponse.status()).toBe(200);
+    expect(speechResponse.headers()['content-type']).toBe('audio/mpeg');
+    expect(speechResponse.headers()['x-audio-source']).toBe('cache');
+
+    // 6. Confirm audio file was restored into .cache/audio
+    expect(fs.existsSync(cacheDir)).toBe(true);
   });
 
   test('Voice fallback flow: when /api/speech returns VOICE_UNAVAILABLE, uses browser voice and displays label', async ({

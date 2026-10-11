@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import fs from 'fs';
 import path from 'path';
 import { getNarrationForRule } from '@/lib/voice/narration';
-import { AudioDiskCache } from '@/lib/voice/audio-cache';
+import { AudioDiskCache, seedAudioCache } from '@/lib/voice/audio-cache';
 import { ElevenLabsService } from '@/lib/voice/elevenlabs';
 
 const mockConvert = vi.fn();
@@ -105,6 +105,87 @@ describe('Phase 5: Voice Unit Suite', () => {
       // Should return null AND delete the corrupted file
       expect(result).toBeNull();
       expect(fs.existsSync(filePath)).toBe(false);
+    });
+  });
+
+  describe('Audio Cache Seeding (seedAudioCache)', () => {
+    const testSeedDir = path.resolve(process.cwd(), '.cache/test-seed');
+
+    beforeEach(() => {
+      if (!fs.existsSync(testSeedDir)) {
+        fs.mkdirSync(testSeedDir, { recursive: true });
+      }
+    });
+
+    afterEach(() => {
+      if (fs.existsSync(testSeedDir)) {
+        fs.rmSync(testSeedDir, { recursive: true, force: true });
+      }
+    });
+
+    it('copies missing seed files into target cache directory', () => {
+      // Create two fake seed files in testSeedDir
+      const mp3Sample = Buffer.alloc(120);
+      mp3Sample[0] = 0x49;
+      mp3Sample[1] = 0x44;
+      mp3Sample[2] = 0x33;
+
+      fs.writeFileSync(path.join(testSeedDir, 'sample-1.mp3'), mp3Sample);
+      fs.writeFileSync(path.join(testSeedDir, 'sample-2.mp3'), mp3Sample);
+
+      const result = seedAudioCache(testCacheDir, testSeedDir);
+      expect(result.copied).toBe(2);
+      expect(result.skipped).toBe(0);
+      expect(result.total).toBe(2);
+
+      expect(fs.existsSync(path.join(testCacheDir, 'sample-1.mp3'))).toBe(true);
+      expect(fs.existsSync(path.join(testCacheDir, 'sample-2.mp3'))).toBe(true);
+    });
+
+    it('does not overwrite existing files in target cache directory', () => {
+      const existingContent = Buffer.from('existing-content-do-not-overwrite');
+      fs.writeFileSync(path.join(testCacheDir, 'already-there.mp3'), existingContent);
+
+      const seedContent = Buffer.alloc(120);
+      seedContent[0] = 0x49;
+      seedContent[1] = 0x44;
+      seedContent[2] = 0x33;
+      fs.writeFileSync(path.join(testSeedDir, 'already-there.mp3'), seedContent);
+
+      const result = seedAudioCache(testCacheDir, testSeedDir);
+      expect(result.copied).toBe(0);
+      expect(result.skipped).toBe(1);
+
+      // Verify the content was NOT overwritten
+      const readBack = fs.readFileSync(path.join(testCacheDir, 'already-there.mp3'));
+      expect(readBack.toString()).toBe('existing-content-do-not-overwrite');
+    });
+
+    it('handles missing seed directory gracefully', () => {
+      const nonExistentSeed = path.resolve(process.cwd(), '.cache/non-existent-seed-dir');
+      const result = seedAudioCache(testCacheDir, nonExistentSeed);
+      expect(result.copied).toBe(0);
+      expect(result.skipped).toBe(0);
+      expect(result.total).toBe(0);
+    });
+
+    it('AudioDiskCache automatically self-heals by copying missing file from seed dir', () => {
+      const validMp3 = Buffer.alloc(120);
+      validMp3[0] = 0x49;
+      validMp3[1] = 0x44;
+      validMp3[2] = 0x33;
+
+      const seedKey = 'self-healing-seed-key';
+      fs.writeFileSync(path.join(testSeedDir, `${seedKey}.mp3`), validMp3);
+
+      // Initialize cache pointing to empty testCacheDir and testSeedDir
+      const cache = new AudioDiskCache(testCacheDir, testSeedDir);
+
+      // Even if file was not initially in cacheDir, get() self-heals from seedDir
+      const retrieved = cache.get(seedKey);
+      expect(retrieved).not.toBeNull();
+      expect(retrieved?.length).toBe(120);
+      expect(fs.existsSync(path.join(testCacheDir, `${seedKey}.mp3`))).toBe(true);
     });
   });
 

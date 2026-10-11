@@ -52,7 +52,7 @@ BinBuddy is engineered to provide an immediate answer even during cloud outages 
 | Tier | Vision Perception | Speech Narration | Ambiguity Handling |
 | :--- | :--- | :--- | :--- |
 | **Tier 1 (Live)** | Google Gemini 3.8 Flash Multimodal API (successful calls p50 ~6.6s, capped at 15s) | ElevenLabs Flash v2.5 TTS (cold ~1.04s) | High confidence (>= 0.65) immediate decision |
-| **Tier 2 (Cache)** | In-memory LRU cache (`sha256(bytes) + version`) | Persistent disk cache (`.cache/audio/`, ~1.25ms disk read) | Sub-threshold triggers 1 plain Clarification question |
+| **Tier 2 (Cache)** | In-memory LRU cache (`sha256(bytes) + version`) | Persistent disk cache (`.cache/audio/`, ~1.25ms disk read, pre-seeded from `data/audio-seed/`) | Sub-threshold triggers 1 plain Clarification question |
 | **Tier 3 (Local)** | Built-in verified sample fixtures (~89.9ms decision) | Browser Web Speech API (`window.speechSynthesis`, ~118ms dispatch) | Selecting _"Not sure"_ routes to city guidance |
 | **Tier 4 (Offline)** | Interactive zero-network manual material picker | Quiet visual result sheet with high contrast | Striped neutral manual check panel |
 
