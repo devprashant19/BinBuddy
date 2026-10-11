@@ -165,8 +165,8 @@ export async function POST(req: NextRequest) {
   } else {
     return createErrorResponse(
       'UNSUPPORTED_TYPE',
-      `Unsupported Content-Type: "${contentType}". Expected multipart/form-data or application/json.`,
-      'Send image as multipart/form-data or send { fixtureId } as application/json.',
+      `Unsupported Content-Type: "${contentType}". Please use JPEG, PNG or WebP.`,
+      'Please use JPEG, PNG or WebP via multipart/form-data, or send { fixtureId } as application/json.',
       requestId
     );
   }

@@ -49,6 +49,15 @@ describe('HTTP Layer & Image Validation', () => {
       const res = validateImageBuffer(textBuffer, 'image/png');
       expect(res.valid).toBe(false);
       expect(res.errorCode).toBe('UNSUPPORTED_TYPE');
+      expect(res.message).toContain('JPEG, PNG or WebP');
+    });
+
+    it('rejects raw HEIC buffer with UNSUPPORTED_TYPE instructing user to use JPEG, PNG or WebP', () => {
+      const heicBuffer = Buffer.from([0x00, 0x00, 0x00, 0x18, 0x66, 0x74, 0x79, 0x70, 0x68, 0x65, 0x69, 0x63]);
+      const res = validateImageBuffer(heicBuffer, 'image/heic');
+      expect(res.valid).toBe(false);
+      expect(res.errorCode).toBe('UNSUPPORTED_TYPE');
+      expect(res.message).toContain('JPEG, PNG or WebP');
     });
 
     it('rejects MIME mismatch when magic bytes differ from declared type', () => {

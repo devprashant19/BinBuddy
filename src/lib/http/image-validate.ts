@@ -78,8 +78,8 @@ export function validateImageBuffer(
     return {
       valid: false,
       errorCode: 'UNSUPPORTED_TYPE',
-      message: 'File is not a supported image format. Only JPEG, PNG, and WebP are allowed.',
-      hint: 'Take a new photo or select a JPEG, PNG, or WebP image.',
+      message: 'Unsupported image format. Please use JPEG, PNG or WebP.',
+      hint: 'Please use JPEG, PNG or WebP.',
     };
   }
 
