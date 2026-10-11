@@ -1,0 +1,275 @@
+{
+  "rulesetId": "houston-tx-curbside",
+  "rulesetVersion": "1.0.0",
+  "draft": false,
+  "city": {
+    "name": "Houston",
+    "region": "TX",
+    "country": "US"
+  },
+  "source": {
+    "name": "City of Houston Solid Waste Management Department",
+    "url": "https://www.houstontx.gov/solidwaste/recycling.html",
+    "lastVerifiedAt": "2026-10-11T03:28:00Z"
+  },
+  "destinations": [
+    {
+      "id": "recycling_cart",
+      "label": "Green recycling cart",
+      "tone": "recycle",
+      "description": "City of Houston green curbside cart for clean, empty recyclables."
+    },
+    {
+      "id": "trash_cart",
+      "label": "Black trash cart",
+      "tone": "landfill",
+      "description": "City of Houston black curbside cart for non-recyclable household waste."
+    },
+    {
+      "id": "special_handling",
+      "label": "Special handling required",
+      "tone": "special",
+      "description": "Take to City of Houston Environmental Service Center or approved drop-off."
+    },
+    {
+      "id": "manual_check",
+      "label": "Check official guidance",
+      "tone": "manual",
+      "description": "Uncertain item; refer to City of Houston waste directory or 311."
+    }
+  ],
+  "rules": [
+    {
+      "id": "battery-special",
+      "priority": 110,
+      "match": {
+        "materials": ["battery"],
+        "itemTypes": ["battery"]
+      },
+      "decision": {
+        "type": "special_handling",
+        "destinationId": "special_handling",
+        "reason": "Batteries cause fires in collection trucks and recycling facilities. Never place them in curbside carts.",
+        "narration": "Batteries require special handling. Take them to a City of Houston Environmental Service Center."
+      },
+      "sourceUrl": "https://www.houstontx.gov/solidwaste/esc.html"
+    },
+    {
+      "id": "electronics-special",
+      "priority": 109,
+      "match": {
+        "materials": ["electronic"],
+        "itemTypes": ["electronics"]
+      },
+      "decision": {
+        "type": "special_handling",
+        "destinationId": "special_handling",
+        "reason": "Electronics contain regulated materials and are not accepted in curbside carts.",
+        "narration": "Electronics cannot go in curbside carts. Take them to an authorized electronics recycling drop-off."
+      },
+      "sourceUrl": "https://www.houstontx.gov/solidwaste/ewaste.html"
+    },
+    {
+      "id": "plastic-film-trash",
+      "priority": 105,
+      "match": {
+        "itemTypes": ["plastic_film"]
+      },
+      "decision": {
+        "type": "trash",
+        "destinationId": "trash_cart",
+        "reason": "Plastic bags and film tangle in sorting equipment and are strictly prohibited in the green cart.",
+        "narration": "Plastic bags and film go in the black trash cart because they tangle sorting machinery."
+      },
+      "sourceUrl": "https://www.houstontx.gov/solidwaste/recycling.html"
+    },
+    {
+      "id": "foam-packaging-trash",
+      "priority": 104,
+      "match": {
+        "itemTypes": ["foam_packaging"]
+      },
+      "decision": {
+        "type": "trash",
+        "destinationId": "trash_cart",
+        "reason": "Styrofoam and foam packaging are strictly prohibited in the green curbside recycling cart.",
+        "narration": "Styrofoam and foam packaging belong in the black trash cart."
+      },
+      "sourceUrl": "https://www.houstontx.gov/solidwaste/recycling.html"
+    },
+    {
+      "id": "polystyrene-resin6-trash",
+      "priority": 103,
+      "match": {
+        "resinCodes": ["6"]
+      },
+      "decision": {
+        "type": "trash",
+        "destinationId": "trash_cart",
+        "reason": "Number 6 plastic (polystyrene) is not accepted in Houston curbside recycling.",
+        "narration": "Plastic marked number 6 belongs in the black trash cart."
+      },
+      "sourceUrl": "https://www.houstontx.gov/solidwaste/recycling.html"
+    },
+    {
+      "id": "paper-cardboard-soiled-trash",
+      "priority": 102,
+      "match": {
+        "materials": ["paper", "cardboard"],
+        "conditions": ["soiled"]
+      },
+      "decision": {
+        "type": "trash",
+        "destinationId": "trash_cart",
+        "reason": "Greasy or food-soiled paper and pizza boxes contaminate recycling and must go in the trash.",
+        "narration": "Food-soiled paper and greasy boxes go in the black trash cart."
+      },
+      "sourceUrl": "https://www.houstontx.gov/solidwaste/recycling.html"
+    },
+    {
+      "id": "metal-can-clean",
+      "priority": 100,
+      "match": {
+        "materials": ["metal"],
+        "itemTypes": ["can"],
+        "conditions": ["clean"]
+      },
+      "decision": {
+        "type": "recycle",
+        "destinationId": "recycling_cart",
+        "reason": "Rinsed and drained aluminum and bimetal soup or beverage cans go in the green recycling cart.",
+        "narration": "Clean metal cans go in the green recycling cart."
+      },
+      "sourceUrl": "https://www.houstontx.gov/solidwaste/recycling.html"
+    },
+    {
+      "id": "glass-container-clean",
+      "priority": 95,
+      "match": {
+        "materials": ["glass"],
+        "itemTypes": ["bottle", "jar"],
+        "conditions": ["clean"]
+      },
+      "decision": {
+        "type": "recycle",
+        "destinationId": "recycling_cart",
+        "reason": "Empty and rinsed glass bottles and jars are accepted in the green curbside cart.",
+        "narration": "Clean glass bottles and jars go in the green recycling cart."
+      },
+      "sourceUrl": "https://www.houstontx.gov/solidwaste/recycling.html"
+    },
+    {
+      "id": "cardboard-clean",
+      "priority": 90,
+      "match": {
+        "materials": ["cardboard"],
+        "itemTypes": ["cardboard_box"],
+        "conditions": ["clean"]
+      },
+      "decision": {
+        "type": "recycle",
+        "destinationId": "recycling_cart",
+        "reason": "Clean, flattened cardboard boxes go in the green recycling cart.",
+        "narration": "Flattened cardboard boxes go in the green recycling cart."
+      },
+      "sourceUrl": "https://www.houstontx.gov/solidwaste/recycling.html"
+    },
+    {
+      "id": "paper-clean",
+      "priority": 85,
+      "match": {
+        "materials": ["paper"],
+        "conditions": ["clean"]
+      },
+      "decision": {
+        "type": "recycle",
+        "destinationId": "recycling_cart",
+        "reason": "Dry, clean newspapers, magazines, catalogs, junk mail, and office paper go in the green cart.",
+        "narration": "Clean paper goes in the green recycling cart."
+      },
+      "sourceUrl": "https://www.houstontx.gov/solidwaste/recycling.html"
+    },
+    {
+      "id": "carton-clean",
+      "priority": 80,
+      "match": {
+        "materials": ["carton"],
+        "itemTypes": ["carton"],
+        "conditions": ["clean"]
+      },
+      "decision": {
+        "type": "recycle",
+        "destinationId": "recycling_cart",
+        "reason": "Rinsed gable-top and shelf-stable beverage cartons go in the green recycling cart.",
+        "narration": "Clean beverage cartons go in the green recycling cart."
+      },
+      "sourceUrl": "https://www.houstontx.gov/solidwaste/recycling.html"
+    },
+    {
+      "id": "plastic-container-clean",
+      "priority": 75,
+      "match": {
+        "materials": ["plastic"],
+        "itemTypes": ["bottle", "jar", "food_container"],
+        "conditions": ["clean"],
+        "resinCodes": ["1", "2", "3", "4", "5", "7"]
+      },
+      "decision": {
+        "type": "recycle",
+        "destinationId": "recycling_cart",
+        "reason": "Clean plastic bottles and jugs marked resin numbers 1 through 5 and 7 go in the green cart.",
+        "narration": "Clean plastic containers go in the green recycling cart."
+      },
+      "sourceUrl": "https://www.houstontx.gov/solidwaste/recycling.html"
+    },
+    {
+      "id": "textile-trash",
+      "priority": 70,
+      "match": {
+        "materials": ["textile"],
+        "itemTypes": ["textile"]
+      },
+      "decision": {
+        "type": "trash",
+        "destinationId": "trash_cart",
+        "reason": "Textiles, clothes, shoes, and pillows are not accepted in curbside recycling.",
+        "narration": "Textiles belong in the black trash cart or a donation bin."
+      },
+      "sourceUrl": "https://www.houstontx.gov/solidwaste/recycling.html"
+    },
+    {
+      "id": "organic-trash",
+      "priority": 65,
+      "match": {
+        "materials": ["organic"]
+      },
+      "decision": {
+        "type": "trash",
+        "destinationId": "trash_cart",
+        "reason": "Food scraps and organic waste cannot be sorted in curbside recycling carts.",
+        "narration": "Food scraps and organic waste go in the black trash cart."
+      },
+      "sourceUrl": "https://www.houstontx.gov/solidwaste/recycling.html"
+    },
+    {
+      "id": "composite-trash",
+      "priority": 60,
+      "match": {
+        "materials": ["composite"]
+      },
+      "decision": {
+        "type": "trash",
+        "destinationId": "trash_cart",
+        "reason": "Composite materials made of mixed bonded layers cannot be recycled curbside.",
+        "narration": "Composite materials go in the black trash cart."
+      },
+      "sourceUrl": "https://www.houstontx.gov/solidwaste/recycling.html"
+    }
+  ],
+  "fallback": {
+    "type": "manual_check",
+    "destinationId": "manual_check",
+    "reason": "No verified City of Houston rule covers this item. Please check official city guidance.",
+    "narration": "I am not sure about this item. Please check the City of Houston guidance."
+  }
+}

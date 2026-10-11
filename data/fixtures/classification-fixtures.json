@@ -1,0 +1,114 @@
+[
+  {
+    "id": "plastic-bottle-clean",
+    "label": "Plastic Water Bottle",
+    "description": "Empty, clean transparent PET beverage bottle",
+    "isMock": true,
+    "classification": {
+      "itemType": "bottle",
+      "material": "plastic",
+      "condition": "clean",
+      "visibleResinCode": "1",
+      "confidence": 0.94,
+      "shortDescription": "Clear plastic water bottle"
+    }
+  },
+  {
+    "id": "aluminum-can-clean",
+    "label": "Soda Can",
+    "description": "Empty aluminum soda can, clean and dry",
+    "isMock": true,
+    "classification": {
+      "itemType": "can",
+      "material": "metal",
+      "condition": "clean",
+      "visibleResinCode": "not_applicable",
+      "confidence": 0.96,
+      "shortDescription": "Aluminum soda beverage can"
+    }
+  },
+  {
+    "id": "glass-jar-clean",
+    "label": "Glass Jam Jar",
+    "description": "Rinsed clear glass jar without lid",
+    "isMock": true,
+    "classification": {
+      "itemType": "jar",
+      "material": "glass",
+      "condition": "clean",
+      "visibleResinCode": "not_applicable",
+      "confidence": 0.91,
+      "shortDescription": "Clear glass food jar"
+    }
+  },
+  {
+    "id": "cardboard-box-clean",
+    "label": "Shipping Box",
+    "description": "Clean, flattened corrugated cardboard box",
+    "isMock": true,
+    "classification": {
+      "itemType": "cardboard_box",
+      "material": "cardboard",
+      "condition": "clean",
+      "visibleResinCode": "not_applicable",
+      "confidence": 0.95,
+      "shortDescription": "Flattened brown cardboard box"
+    }
+  },
+  {
+    "id": "pizza-box-greasy",
+    "label": "Greasy Pizza Box",
+    "description": "Cardboard pizza box with visible grease stains and food residue",
+    "isMock": true,
+    "classification": {
+      "itemType": "cardboard_box",
+      "material": "cardboard",
+      "condition": "soiled",
+      "visibleResinCode": "not_applicable",
+      "confidence": 0.89,
+      "shortDescription": "Greasy pizza takeaway box"
+    }
+  },
+  {
+    "id": "plastic-bag",
+    "label": "Plastic Grocery Bag",
+    "description": "Flexible thin polyethylene shopping bag",
+    "isMock": true,
+    "classification": {
+      "itemType": "plastic_film",
+      "material": "plastic",
+      "condition": "clean",
+      "visibleResinCode": "4",
+      "confidence": 0.92,
+      "shortDescription": "Thin grocery plastic shopping bag"
+    }
+  },
+  {
+    "id": "battery",
+    "label": "AA Alkaline Battery",
+    "description": "Household cylindrical AA battery",
+    "isMock": true,
+    "classification": {
+      "itemType": "battery",
+      "material": "battery",
+      "condition": "clean",
+      "visibleResinCode": "not_applicable",
+      "confidence": 0.97,
+      "shortDescription": "Alkaline cylindrical AA battery"
+    }
+  },
+  {
+    "id": "blurry-unknown",
+    "label": "Blurry Item",
+    "description": "Unclear, out-of-focus photo where item cannot be identified",
+    "isMock": true,
+    "classification": {
+      "itemType": "unknown",
+      "material": "unknown",
+      "condition": "unknown",
+      "visibleResinCode": "not_visible",
+      "confidence": 0.28,
+      "shortDescription": "Unidentified blurry item"
+    }
+  }
+]

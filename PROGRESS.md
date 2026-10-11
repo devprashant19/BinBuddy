@@ -11,7 +11,7 @@
 ### Phase Plan
 
 - [x] Phase 0: Repo, tooling, verification harness
-- [ ] Phase 1: Ruleset and deterministic rules engine
+- [x] Phase 1: Ruleset and deterministic rules engine
 - [ ] Phase 2: API layer with mock provider
 - [ ] Phase 3: The interface (all states, design notes, contrast, screenshots)
 - [ ] Phase 4: Gemini integration, cache and failure handling
@@ -26,7 +26,8 @@
 ## Verification Evidence Log
 
 ## Phase 0: Repo, tooling, verification harness (2026-10-11 03:26 IST)
-- **Commit**: (pending initial commit)
+
+- **Commit**: `7bd6112`
 - **Commands run and result**:
   - `npm run typecheck`: OK (0 errors)
   - `npm run lint`: OK (0 errors, 0 warnings)
@@ -43,3 +44,19 @@
   - Security headers active: CSP, nosniff, DENY, Referrer-Policy, camera=(self).
 - **Not verified and why**: None. All Phase 0 gate criteria verified and passing.
 
+## Phase 1: Ruleset and deterministic rules engine (2026-10-11 10:16 IST)
+
+- **Commit**: (pending commit)
+- **Commands run and result**:
+  - `npm run typecheck`: OK (0 errors)
+  - `npm run lint`: OK (0 errors, 0 warnings)
+  - `npm run test`: OK (66 unit tests passed, covering all rules, fixtures, gating, and edge cases)
+  - `npm run check:rules`: OK (all Houston rules valid, unique priorities, non-empty narrations, valid destination IDs)
+  - `npm run check:rules (failure test)`: OK (demonstrated failure on deliberately broken ruleset copy, then cleanly removed)
+  - `npx vitest run --coverage`: OK (100% Statements, 100% Branches, 100% Functions across `src/lib/rules/`)
+  - `npm run check:secrets`: OK (clean)
+- **Evidence**:
+  - Authoritative source fetched live from City of Houston Solid Waste Management Department (`https://www.houstontx.gov/solidwaste/recycling.html`).
+  - Strict decoupling: AI schema has zero destination/advice fields. Pure rules engine alone determines bins.
+  - 1000 repeated calls identical (deterministic). Rule order permutations preserve identical decision.
+- **Not verified and why**: None. All Phase 1 gate criteria verified and passing.
