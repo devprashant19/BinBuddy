@@ -18,7 +18,7 @@
 - [x] Phase 5: Voice (ElevenLabs with fallbacks)
 - [x] Phase 6: Tally, settings, accessibility and copy pass
 - [x] Phase 7: Hardening, resilience and clean-clone test
-- [x] Phase 8: Docker, Vultr deployment and domain
+- [x] Phase 8: Docker, container deployment and domain
 - [x] Phase 9: README, assets and submission kit
 
 ---
@@ -182,7 +182,7 @@
   - Zero image disk writes or persistent logging.
 - **Not verified and why**: None. All Phase 7 gate criteria verified and passing.
 
-## Phase 8: Docker, Vultr deployment and domain (2026-10-11 12:05 IST)
+## Phase 8: Docker, container deployment and domain (2026-10-11 12:05 IST)
 
 - **Commit**: `cf053fd`
 - **Commands run and result**:
@@ -196,15 +196,15 @@
   - `npm run check:api`: OK (all 14 contract tests passed)
   - `docker --version`: OK (Docker version 29.8.1 installed)
   - `scripts/smoke-remote.mjs`: OK (implemented with checks for `/`, security headers, health, rules, classification, 400 error handling, speech fallback)
-  - `deploy/VULTR.md`: OK (exact human steps for Ubuntu VM provisioning, firewalling 22/80/443, docker setup, update and rollback)
-  - `deploy/DOMAIN.md`: OK (GoDaddy Registry domain claiming, DNS A-record mapping, Caddy automatic TLS)
+  - `deploy/HOSTING.md`: OK (Render, Cloud Run, and plain VPS container hosting guides with update and rollback)
+  - `deploy/DOMAIN.md`: OK (GoDaddy Registry domain claiming, host DNS record mapping, automated TLS)
 - **Docker & Deployment Invariants**:
   - Multi-stage `Dockerfile`: builds with `output: 'standalone'`, runs as unprivileged user `nextjs:nodejs` (UID/GID 1001), includes healthcheck on `/api/health`.
-  - `Caddyfile` reverse-proxies to standalone app with automatic TLS and security headers.
-  - Secrets strictly injected at runtime from `.env` via `docker-compose.yml`, never baked into images.
-  - Audio cache persisted in named volume `audio_cache`.
+  - `Caddyfile` reverse-proxies to standalone app with automatic TLS and security headers for optional VPS deployments.
+  - Secrets strictly injected at runtime from `.env` or container host settings, never baked into images.
+  - Audio cache persisted and pre-seeded from `data/audio-seed/`.
 - **Not verified and why**:
-  - Docker Desktop daemon is not running on the local Windows development host (`open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified`). Actual `docker build` and cloud VM provisioning are tracked as human-only actions in `HUMAN-TODO.md`. All configuration files (`Dockerfile`, `docker-compose.yml`, `Caddyfile`, `deploy/VULTR.md`, `deploy/DOMAIN.md`) are verified and complete.
+  - Docker Desktop daemon is not running on the local Windows development host (`open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified`). Actual `docker build` and cloud hosting provisioning are tracked as human-only actions in `HUMAN-TODO.md`. All configuration files (`Dockerfile`, `docker-compose.yml`, `Caddyfile`, `deploy/HOSTING.md`, `deploy/DOMAIN.md`) are verified and complete.
 
 ## Phase 9: README, assets and submission kit (2026-10-11 12:10 IST)
 
@@ -226,5 +226,5 @@
   - 100% functional in demo mode with zero API keys required.
   - Transparent attribution and disclosures.
 - **Not verified and why**:
-  - Human-only submission steps (Devpost submission, recording live demo video, claiming GoDaddy domain, provisioning Vultr VM) tracked in `HUMAN-TODO.md`.
+  - Human-only submission steps (Devpost submission, recording live demo video, claiming GoDaddy domain, provisioning container host) tracked in `HUMAN-TODO.md`.
 

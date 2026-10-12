@@ -7,11 +7,13 @@ This file tracks tasks that require human authorization, credentials, physical d
 ## 1. Secrets & Environment Configuration
 
 1. **Gemini API Key**: Obtain from Google AI Studio. Add `GEMINI_API_KEY=<key>` to `.env`.
-2. **ElevenLabs API Key**: Obtain from ElevenLabs. Add `ELEVENLABS_API_KEY=<key>` and `ELEVENLABS_VOICE_ID=<voice_id>` to `.env`.
+2. **ElevenLabs API Key**: Obtain from ElevenLabs. Add `ELEVENLABS_API_KEY=<key>` and `ELEVENLABS_VOICE_ID=EXAVITQu4vr4xnSDxMaL` to `.env`.
 3. Verify secrets are never checked into git by running:
    ```bash
    npm run check:secrets
    ```
+
+---
 
 ## 2. Test Media for Live Testing
 
@@ -20,6 +22,8 @@ This file tracks tasks that require human authorization, credentials, physical d
    ```bash
    npm run smoke:live
    ```
+
+---
 
 ## 3. Audio Pre-warming & Seeding
 
@@ -30,61 +34,68 @@ If you add new municipal rules or want to regenerate audio:
 - Copy any updated files into `data/audio-seed/` to persist them across container builds.
 - If ElevenLabs is unconfigured or unavailable, browser speech synthesis immediately plays aloud without server audio files.
 
-## 4. Vultr Server Deployment
+---
 
-1. Log in to Vultr and deploy a Cloud Compute instance (Ubuntu 24.04 x64, 1 vCPU, 1 GB or 2 GB RAM).
-2. Set up SSH key access and firewall rules permitting ports 22 (SSH), 80 (HTTP), and 443 (HTTPS).
-3. Connect to the instance:
-   ```bash
-   ssh root@<VULTR_IP>
-   ```
-4. Install Docker and Docker Compose plugin:
-   ```bash
-   apt-get update && apt-get install -y docker.io docker-compose-v2 git
-   ```
-5. Clone the repository and configure `.env`:
-   ```bash
-   git clone <REPO_URL> /opt/binbuddy
-   cd /opt/binbuddy
-   cp .env.example .env
-   # Edit .env with production keys and your custom domain
-   nano .env
-   ```
-6. Start containers:
-   ```bash
-   docker compose up -d --build
-   ```
-7. Check logs:
-   ```bash
-   docker compose logs -f
-   ```
+## 4. Production Container Deployment Steps
 
-## 5. Domain & DNS Configuration (GoDaddy Registry)
+Follow these ordered steps to deploy BinBuddy to Render, Cloud Run, or your chosen container host (see [`deploy/HOSTING.md`](deploy/HOSTING.md)):
 
-1. Follow the MLH / CodeRED sponsor guide to claim an eligible free domain through GoDaddy Registry.
-2. In the domain DNS settings, add an `A` record pointing `@` to `<VULTR_IP>`.
-3. In `/opt/binbuddy/.env` on the Vultr VM, set `APP_URL=https://<YOUR_DOMAIN>` and configure Caddy to issue automatic Let's Encrypt certificates.
-4. Verify deployment from your local machine:
+1. **Create the Service**:
+   - In Render (or Cloud Run), create a new Web Service connected to your GitHub repository (`BinBuddy`).
+   - Select runtime **Docker** (it automatically uses the root `Dockerfile`).
+   - Set the health check path to `/api/health`.
+
+2. **Set Environment Variables**:
+   In your host service settings, configure:
+   - `GEMINI_API_KEY`: Your Google AI Studio API key
+   - `GEMINI_MODEL`: `gemini-3.8-flash`
+   - `ELEVENLABS_API_KEY`: Your ElevenLabs API key
+   - `ELEVENLABS_VOICE_ID`: `EXAVITQu4vr4xnSDxMaL`
+   - `ELEVENLABS_MODEL_ID`: `eleven_flash_v2_5`
+   - `PROVIDER_MODE`: `auto`
+   - `APP_URL`: Your service URL (e.g., `https://binbuddy.onrender.com`)
+   - `NODE_ENV`: `production`
+
+3. **Deploy**:
+   - Trigger the initial deployment.
+   - Wait for the build and container startup to complete. Render/Cloud Run will verify the `/api/health` endpoint.
+
+4. **Verify Live Remote Deployment**:
+   Run the automated remote smoke suite from your local machine:
    ```bash
-   npm run smoke:remote -- https://<YOUR_DOMAIN>
+   npm run smoke:remote -- https://<YOUR_DEPLOYED_URL>
    ```
 
-## 6. Demo Video & Presentation
+5. **Tap a Sample and Confirm Voice**:
+   - Open the deployed URL in your browser.
+   - Tap the **"Soda Can"** sample button to verify item classification and municipal rule routing.
+   - Tap **"Hear it"** to verify that audio plays immediately (served directly from the pre-seeded cache with `X-Audio-Source: cache`).
 
-1. Follow the 3-minute demo script in `SUBMISSION/demo-script.md`.
+6. **Add the Custom Domain**:
+   - Claim an eligible domain via GoDaddy Registry (or your DNS provider).
+   - In your container host dashboard, navigate to **Custom Domains** and add your domain (e.g. `binbuddy-sort.live`).
+   - Add the DNS record (`CNAME` or `A` record) requested by your host in your domain registrar DNS settings (see [`deploy/DOMAIN.md`](deploy/DOMAIN.md)).
+   - Wait for DNS propagation and automatic HTTPS certificate provisioning.
+
+---
+
+## 5. Demo Video & Presentation
+
+1. Follow the 3-minute demo script in [`SUBMISSION/demo-script.md`](SUBMISSION/demo-script.md).
 2. Record screen + audio on laptop / mobile device.
 3. Upload to YouTube / Vimeo as unlisted or public.
 
-## 7. Devpost Submission
+---
+
+## 6. Devpost Submission
 
 1. Ensure the GitHub repository visibility is set to **Public**.
 2. Create project entry on Devpost for CodeRED: Orion.
-3. Paste the contents of `SUBMISSION/devpost.md`.
-4. Enter the deployed Vultr URL, GitHub repository link, and demo video link.
-5. Select the sponsor prize categories:
+3. Paste the contents of [`SUBMISSION/devpost.md`](SUBMISSION/devpost.md).
+4. Enter the deployed application URL, GitHub repository link, and demo video link.
+5. Select the eligible sponsor prize categories:
    - MLH Gemini API
    - MLH ElevenLabs
-   - MLH Vultr
    - MLH GoDaddy Registry
    - Best Environment Hack
    - DEV Writing Challenge

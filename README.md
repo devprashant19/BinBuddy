@@ -117,22 +117,13 @@ npm run smoke:remote -- http://localhost:3000
 
 ---
 
-## Production Deployment (Docker & Caddy)
+## Production Deployment
 
-[ADD AFTER DEPLOY - Cloud deployment scripts and configurations prepared below]:
+Hosted at [ADD AFTER DEPLOY] on [HOST NAME].
 
-```bash
-# Launch with automated TLS reverse proxy
-docker compose up -d --build
-
-# View logs
-docker compose logs -f
-```
-
-- **Standalone Runner**: Multi-stage Docker build running Next.js standalone as unprivileged user `nextjs:nodejs` (UID 1001).
-- **Automated TLS**: Caddy is configured to provision and renew TLS certificates for your domain upon DNS propagation.
-- Detailed step-by-step guides are in [`deploy/VULTR.md`](deploy/VULTR.md) and [`deploy/DOMAIN.md`](deploy/DOMAIN.md).
-- [ADD AFTER DEPLOY: Live Vultr IP and production GoDaddy custom domain link]
+- **Containerized Runner**: Multi-stage Docker build running Next.js standalone as unprivileged user `nextjs:nodejs` (UID 1001), binding to `0.0.0.0` with dynamic `$PORT`.
+- **Audio Seeding**: Pre-generated audio files in `data/audio-seed/` automatically seed cache on container boot, enabling deployment to stateless or ephemeral container hosts (Render, Google Cloud Run).
+- **Deployment Guides**: Detailed step-by-step guides for Render, Google Cloud Run, and plain VPS are in [`deploy/HOSTING.md`](deploy/HOSTING.md) and [`deploy/DOMAIN.md`](deploy/DOMAIN.md).
 
 ---
 

@@ -1,3 +1,7 @@
+# Optional Plain VPS Deployment Configuration
+# Used when deploying to a standalone Linux virtual machine with Caddy reverse proxy.
+# For managed container hosting (Render, Cloud Run), see deploy/HOSTING.md.
+
 services:
   app:
     build:

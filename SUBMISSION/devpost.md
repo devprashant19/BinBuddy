@@ -27,10 +27,9 @@ Generic AI chatbots often compound this issue by hallucinating regional recyclin
 - **Next.js 15.2 & React 19**: App Router, standalone Docker compilation, and clean server-side configuration.
 - **Google Gemini API (`@google/genai` v0.2.0)**: Structured JSON outputs derived from Zod schemas for physical item description using `gemini-3.8-flash`.
 - **Deterministic Rules Engine**: 100% coverage of the rules engine mapping physical attributes to City of Houston municipal cart destinations.
-- **ElevenLabs Speech SDK (`elevenlabs` v1.50.0)**: Voice synthesis cached to local disk via SHA-256 content hashes, backed by automatic client-side Web Speech fallbacks.
-- **Multi-Stage Docker & Caddy**: Containerized standalone runner running as unprivileged user `nextjs:nodejs` (UID 1001) with Caddy reverse proxy configuration. [ADD AFTER DEPLOY: Live Vultr deployment link].
+- **Containerized Standalone Deployment**: Multi-stage Docker build running as unprivileged user `nextjs:nodejs` (UID 1001) with pre-seeded audio cache for zero-dependency container hosting. Hosted at [ADD AFTER DEPLOY] on [HOST NAME].
 - **Tailwind CSS & Design Tokens**: Accessible UI ("Colour belongs to the bins") designed for outdoor readability.
-- **Playwright & Vitest**: 116 unit tests and 14 E2E browser tests with automated Axe accessibility auditing.
+- **Playwright & Vitest**: 124 unit tests and 15 E2E browser tests with automated Axe accessibility auditing.
 
 ---
 
@@ -78,6 +77,5 @@ Decoupling perception from policy is a crucial architectural pattern for agentic
 
 - **Google Gemini API**: Uses Gemini 3.8 Flash via official `@google/genai` with strict JSON schema outputs to visually classify materials, cleanliness, and resin codes from consumer item photos.
 - **ElevenLabs**: Uses ElevenLabs text-to-speech to deliver spoken municipal disposal advice directly at the bins with SHA-256 disk caching and automatic browser voice fallbacks.
-- **Vultr**: [ADD AFTER DEPLOY: Containerized via multi-stage Docker and automated Caddy reverse proxy on Vultr Cloud Compute Ubuntu instance].
 - **GoDaddy Registry**: [ADD AFTER DEPLOY: Custom domain routing with automatic HTTPS certification].
 - **Best Environment Hack**: Reduces recycling stream contamination and wishcycling in residential curbside programs through authoritative city rules enforcement.

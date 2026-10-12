@@ -1,3 +1,7 @@
+# Optional Plain VPS TLS Reverse Proxy Configuration
+# Used alongside docker-compose.yml for automated Let's Encrypt certificates on a standalone VPS.
+# For managed container hosting (Render, Cloud Run), see deploy/HOSTING.md.
+
 {$DOMAIN:localhost} {
     encode gzip zstd
 

@@ -6,7 +6,7 @@ This file records challenges, technical roadblocks, or edge cases encountered du
 
 ## 1. Multi-platform Shell Scripting
 
-- **Challenge**: Development environment is Windows (PowerShell), but production deployment is Linux (Ubuntu on Vultr). Standard npm scripts using `rm -rf`, `export`, or `curl` fail on Windows.
+- **Challenge**: Development environment is Windows (PowerShell), but production deployment is Linux (containerized Linux on Docker). Standard npm scripts using `rm -rf`, `export`, or `curl` fail on Windows.
 - **Mitigation**: All repository scripts are written as pure Node.js `.mjs` scripts. Cross-platform environment variables in npm scripts are managed using `cross-env`.
 
 ## 2. In-Memory Image Safety

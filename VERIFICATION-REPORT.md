@@ -203,7 +203,7 @@ Every factual claim across project documentation was audited and reconciled agai
 | `README.md` | "Prompt injection proof" | Tested on 3 adversarial images; schema and rules engine mitigate injection by design. | **TRUE BUT TOO STRONG** | Changed to "Mitigated by design, tested on 3 adversarial images". | **TRUE** |
 | `README.md` | "0 violations" (WCAG / Axe) | Axe checks passed with zero critical or serious issues. | **TRUE BUT TOO STRONG** | Changed to "zero serious or critical issues in automated axe checks". | **TRUE** |
 | `README.md` | "100% coverage" | Rules engine has 100% test coverage; full project has ~88% line coverage. | **TRUE BUT TOO STRONG** | Specified "100% coverage of the rules engine". | **TRUE** |
-| `README.md` | Deployed live on Vultr | Cloud deployment files exist but deployment requires manual human provisioning. | **UNVERIFIED** | Marked with placeholder `[ADD AFTER DEPLOY]`. | **TRUE** |
+| `README.md` | Deployed live on cloud container host | Cloud deployment files exist but deployment requires manual human provisioning. | **UNVERIFIED** | Marked with placeholder `Hosted at [ADD AFTER DEPLOY] on [HOST NAME]`. | **TRUE** |
 | `SUBMISSION/devpost.md`| "What is recyclable in Seattle is often rejected in Houston" | Unsourced comparison statement. | **UNVERIFIED** | Cut unsourced comparison; stated that regional guidelines differ across cities. | **TRUE** |
 | `SUBMISSION/devpost.md`| "Ultra-fast... zero-lag fallback... within 400ms" | Browser voice dispatch measured at ~118.6ms; live cloud vision successful p50 ~6.6s. | **TRUE BUT TOO STRONG** | Replaced with exact measured timings (~118ms dispatch). | **TRUE** |
 | `SUBMISSION/devpost.md`| "We solved this" (prompt injection) | Mitigation achieved by separating perception schema from rules policy. | **TRUE BUT TOO STRONG** | Changed to "Mitigated by design, tested on 3 adversarial images". | **TRUE** |
@@ -256,9 +256,9 @@ Every factual claim across project documentation was audited and reconciled agai
 2. **Live Gemini Calls Beyond 20 Requests/Day**:
    - *Reason*: Google AI Studio free-tier API keys enforce a hard quota of 20 requests per day (`GenerateRequestsPerDayPerProjectPerModel-FreeTier`). After 13 live benchmark calls, subsequent requests returned HTTP 429 (`RESOURCE_EXHAUSTED`).
    - *Mitigation*: 13 clean live runs were recorded, capturing p50, p95, and max latencies. Graceful fast-fail degradation to 503 fallback was verified.
-3. **Live Vultr Server & GoDaddy Domain Deployment**:
-   - *Reason*: Provisioning remote cloud infrastructure requires human cloud credentials and credit card billing outside this repository workspace.
-   - *Mitigation*: Deployment files (`deploy/VULTR.md`, `deploy/DOMAIN.md`, `docker-compose.yml`, `Caddyfile`) are tested and ready. Placeholders marked `[ADD AFTER DEPLOY]`.
+3. **Live Cloud Container Host & Custom Domain Deployment**:
+   - *Reason*: Provisioning remote cloud infrastructure requires human cloud credentials and billing outside this repository workspace.
+   - *Mitigation*: Deployment files (`deploy/HOSTING.md`, `deploy/DOMAIN.md`, `docker-compose.yml`, `Caddyfile`) are tested and ready. Placeholders marked `Hosted at [ADD AFTER DEPLOY] on [HOST NAME]`.
 
 ---
 

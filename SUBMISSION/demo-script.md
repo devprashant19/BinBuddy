@@ -57,7 +57,7 @@
 ### [2:20 - 2:50] Architecture & Engineering Invariants
 
 - **Visual**: Show architecture slide (or Mermaid diagram).
-- **Voiceover**: _"Under the hood, BinBuddy enforces our core invariant: Gemini describes what is physically visible; our deterministic TypeScript rules engine alone decides the bin. 116 unit tests with 100% rules engine coverage, 14 E2E Playwright tests with zero serious or critical issues in automated axe checks, zero image disk storage, containerized with Caddy [ADD AFTER DEPLOY: Vultr production link]."_
+- **Voiceover**: _"Under the hood, BinBuddy enforces our core invariant: Gemini describes what is physically visible; our deterministic TypeScript rules engine alone decides the bin. 124 unit tests with 100% rules engine coverage, 15 E2E Playwright tests with zero serious or critical issues in automated axe checks, zero image disk storage, containerized with multi-stage Docker. Hosted at [ADD AFTER DEPLOY] on [HOST NAME]."_
 
 ---
 
